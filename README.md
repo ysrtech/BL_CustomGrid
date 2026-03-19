@@ -1,4 +1,4 @@
-# Enhanced Admin Grids
+# Enhanced Admin Grids for OpenMage
 ## Version 2.0.0.1
 
 This is the updated and maintained version of the Enhanced Admin Grids extension compatible with Magento 1.9 and the latest versions of OpenMage.
