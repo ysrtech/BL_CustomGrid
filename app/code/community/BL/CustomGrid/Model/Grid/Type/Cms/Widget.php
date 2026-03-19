@@ -1,0 +1,37 @@
+<?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   BL
+ * @package    BL_CustomGrid
+ * @copyright  Copyright (c) 2015 Benoît Leulliette <benoit.leulliette@gmail.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+class BL_CustomGrid_Model_Grid_Type_Cms_Widget extends BL_CustomGrid_Model_Grid_Type_Abstract
+{
+    protected function _getSupportedBlockTypes()
+    {
+        return array('widget/adminhtml_widget_instance_grid');
+    }
+    
+    protected function _getEditorModelClassCode()
+    {
+        return 'customgrid/grid_editor_cms_widget';
+    }
+    
+    protected function _getSavedFieldValueForRender($blockType, BL_CustomGrid_Object $config, array $params, $entity)
+    {
+        /** @var $entity Mage_Widget_Model_Widget_Instance */
+        if ($config->getValueId() == 'store_ids') {
+            $storesIds = $entity->getStoreIds();
+            return (is_array($storesIds) ? $storesIds : explode(',', $storesIds));
+        }
+        return parent::_getSavedFieldValueForRender($blockType, $config, $params, $entity);
+    }
+}
