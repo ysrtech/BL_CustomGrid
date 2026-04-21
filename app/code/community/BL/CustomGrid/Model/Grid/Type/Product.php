@@ -89,13 +89,21 @@ class BL_CustomGrid_Model_Grid_Type_Product extends BL_CustomGrid_Model_Grid_Typ
     
     public function beforeGridPrepareCollection(Mage_Adminhtml_Block_Widget_Grid $gridBlock, $firstTime = true)
     {
-        $this->setMustCaptureExportedCollection(!$firstTime);
         return $this;
     }
     
     public function afterGridPrepareCollection(Mage_Adminhtml_Block_Widget_Grid $gridBlock, $firstTime = true)
     {
-        $this->setMustCaptureExportedCollection(false);
+        // Capture the collection after the second (filter-aware) preparation so the exported
+        // collection contains the correct WHERE clauses applied by _setFilterValues.
+        // We call clear() on the clone to ensure _isCollectionLoaded is false regardless of
+        // whether the observer already loaded it at page-size 1; clear() resets items and the
+        // loaded flag while leaving the SQL SELECT (and all filter conditions) untouched.
+        if (!$firstTime && ($collection = $gridBlock->getCollection())) {
+            $cloned = clone $collection;
+            $cloned->clear();
+            $gridBlock->blcg_setExportedCollection($cloned);
+        }
         return $this;
     }
     
@@ -103,10 +111,7 @@ class BL_CustomGrid_Model_Grid_Type_Product extends BL_CustomGrid_Model_Grid_Typ
         Mage_Adminhtml_Block_Widget_Grid $gridBlock, 
         Varien_Data_Collection $collection
     ) {
-        if ($this->getMustCaptureExportedCollection()) {
-            $clonedCollection = clone $collection;
-            $gridBlock->blcg_setExportedCollection($clonedCollection);
-        }
+        // Collection is now captured in afterGridPrepareCollection after filters have been applied.
         return $this;
     }
     
