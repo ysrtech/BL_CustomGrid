@@ -286,6 +286,11 @@
             <name>Products Widget Chooser</name>
             <sort_order>110000</sort_order>
         </product_widget_chooser>
+
+        <promo_widget_chooser_sku model="customgrid/grid_type_promo_widget_chooser_sku" module="customgrid">
+            <name>Promo SKU Chooser</name>
+            <sort_order>115000</sort_order>
+        </promo_widget_chooser_sku>
         
         <customer_edit_tab model="customgrid/grid_type_customer_tab" module="customgrid">
             <name>Customer Edit Tab</name>
