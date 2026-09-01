@@ -491,7 +491,7 @@ class BL_CustomGrid_Blcg_GridController extends BL_CustomGrid_Controller_Grid_Ac
     protected function _applyGridsListAction(
         $methodName,
         array $parameters,
-        $saveAfter = false,
+        $saveAfter,
         $successMessage,
         $defaultErrorMessage
     ) {

@@ -165,7 +165,7 @@ abstract class BL_CustomGrid_Block_Widget_Grid_Editor_Renderer_Field_Choice exte
     protected function _renderChoicesValue(
         $renderableValue,
         array $choices,
-        $allowMultiple = false,
+        $allowMultiple,
         BL_CustomGrid_Model_Grid_Editor_Value_Config $valueConfig
     ) {
         $renderableValue = $this->_getRenderableChoicesValue($renderableValue, $allowMultiple, $valueConfig);
