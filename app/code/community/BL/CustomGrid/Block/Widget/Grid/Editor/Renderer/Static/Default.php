@@ -321,7 +321,7 @@ class BL_CustomGrid_Block_Widget_Grid_Editor_Renderer_Static_Default
         return $value->toString($format, null, $locale);
     }
     
-    protected function _getRenderedValue()
+    protected function _getRenderedValue($renderableValue = null)
     {
         // @todo whenever needed, make (- a far more powerful -) use of render options :)
         $editedConfig    = $this->getEditedConfig();

@@ -21,7 +21,7 @@ class BL_CustomGrid_Block_Widget_Grid_Editor_Renderer_Static_Store
         return Mage::getSingleton('adminhtml/system_store');
     }
     
-    protected function _getRenderedValue()
+    protected function _getRenderedValue($renderableValue = null)
     {
         $editedConfig         = $this->getEditedConfig();
         $renderOptions        = $editedConfig['renderer'];
