@@ -379,9 +379,55 @@ class BL_CustomGrid_Model_Custom_Column_Applier extends BL_CustomGrid_Model_Cust
         }
         
         $customColumn->setCurrentBlockValues(array());
+        return $this->_bindFilterConditionCallback($blockValues, $gridBlock);
+    }
+
+    /**
+     * Rebind a custom column's filter condition callback to the given grid block, so that it survives the callback
+     * ownership check introduced by SUPEE-11219
+     *
+     * That patch made Mage_Adminhtml_Block_Widget_Grid::_addColumnFilterToCollection() only honour a
+     * filter_condition_callback whose object is the grid block itself. Custom columns are models, not blocks, so
+     * their callbacks are rejected: the filter then falls through to addFieldToFilter() on a column index that has
+     * no matching field, which is where the "Invalid attribute name" errors come from.
+     *
+     * OpenMage 20 additionally accepts a Closure bound to the grid block, so wrapping the callback restores custom
+     * column filtering without anyone having to patch or override the core grid block. The closure is bound without
+     * a scope, so it gains no access to the block's protected members.
+     *
+     * Cores predating that check (Magento 1.9, OpenMage 19) do not understand Closure callbacks, so there the
+     * callback is deliberately left as it is.
+     *
+     * @param array $blockValues Grid column block values
+     * @param Mage_Adminhtml_Block_Widget_Grid $gridBlock Grid block
+     * @return array
+     */
+    protected function _bindFilterConditionCallback(array $blockValues, Mage_Adminhtml_Block_Widget_Grid $gridBlock)
+    {
+        if (!isset($blockValues['filter_condition_callback'])
+            || !method_exists($gridBlock, 'validateColumnFilterCallback')) {
+            return $blockValues;
+        }
+
+        $callback = $blockValues['filter_condition_callback'];
+
+        if (($callback instanceof Closure)
+            || (is_array($callback) && isset($callback[0]) && ($callback[0] instanceof Mage_Adminhtml_Block_Widget_Grid))
+            || !is_callable($callback)) {
+            // Already acceptable to the core check, or not usable at all
+            return $blockValues;
+        }
+
+        $blockValues['filter_condition_callback'] = Closure::bind(
+            function ($collection, $column) use ($callback) {
+                return call_user_func($callback, $collection, $column);
+            },
+            $gridBlock
+        );
+
         return $blockValues;
     }
-    
+
     /**
      * Apply the current custom column to the given grid block, and return the corresponding grid column block values,
      * or false if an error occurred
