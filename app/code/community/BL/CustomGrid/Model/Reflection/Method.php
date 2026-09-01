@@ -79,6 +79,7 @@ class BL_CustomGrid_Model_Reflection_Method extends ReflectionMethod
      * 
      * @param bool $accessible Whether the method should be accessible
      */
+    #[\ReturnTypeWillChange]
     public function setAccessible($accessible)
     {
         $this->_hasForcedAccessibility = (bool) $accessible;
@@ -136,13 +137,23 @@ class BL_CustomGrid_Model_Reflection_Method extends ReflectionMethod
         return call_user_func_array($callback, $args);
     }
     
-    public function invoke($object, $arg = null)
+    /**
+     * Invoke the reflected method on the given object
+     * 
+     * Note : the variadic signature is required to stay compatible with ReflectionMethod::invoke(),
+     * which is declared as invoke(?object $object, mixed ...$args): mixed since PHP 8
+     * 
+     * @param mixed $object Object on which to call the method (null if static method)
+     * @param mixed ...$args Call arguments
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function invoke($object = null, ...$args)
     {
-        $args = func_get_args();
-        array_shift($args);
         return $this->invokeArgs($object, $args);
     }
     
+    #[\ReturnTypeWillChange]
     public function invokeArgs($object, array $args)
     {
         return $this->_hasForcedAccessibility && !empty($this->_accessibleObject)

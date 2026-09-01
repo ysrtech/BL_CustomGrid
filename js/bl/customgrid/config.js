@@ -563,6 +563,652 @@ blcg.Grid.Tools = {
     }
 };
 
+/**
+ * Searchable select
+ * 
+ * Adds a search field to a select element, which filters its options while typing.
+ * The original select element is kept as-is (and still holds the values), so that
+ * everything relying on it (form serialization, validation, native behaviours, ...)
+ * keeps on working the same way.
+ */
+blcg.SearchableSelect = Class.create();
+
+blcg.SearchableSelect.prototype = {
+    initialize: function(select, config)
+    {
+        this.config = Object.extend({
+            wrapperClassName: 'blcg-searchable-select',
+            layoutClassName: 'blcg-searchable-select-block',
+            searchClassName: 'blcg-searchable-select-search',
+            inputClassName: 'blcg-searchable-select-input',
+            counterClassName: 'blcg-searchable-select-counter',
+            noResultClassName: 'blcg-searchable-select-no-result',
+            enhancedClassName: 'blcg-searchable-select-enhanced',
+            noResultOptionClassName: 'blcg-searchable-select-no-result-option',
+            searchDelay: 100,
+            placeholder: null,
+            noResultLabel: null,
+            // Grid object on which to apply the filters when the ENTER key is pressed (grid filters)
+            gridObject: null,
+            // Callbacks called when the ENTER / ESCAPE key is pressed (respectively)
+            onEnter: null,
+            onEscape: null
+        }, config || {});
+        
+        if (!(this.select = $(select)) || this.select.retrieve(blcg.SearchableSelect.STORAGE_KEY, null)) {
+            return false;
+        }
+        
+        this.query = '';
+        this.searchTimeout   = null;
+        this.noResultOption  = null;
+        this.options         = this.extractOptions();
+        this.optionsCount    = this.countSelectableOptions(this.options);
+        this.selectedValues  = this.getSelectedValues();
+        this.matchingValues  = this.getSelectableValues(this.options);
+        
+        this.build();
+        this.select.store(blcg.SearchableSelect.STORAGE_KEY, this);
+    },
+    
+    /**
+     * Prepare and return the given string for searches
+     */
+    prepareSearchString: function(value)
+    {
+        return ('' + value).toLowerCase().replace(/\s+/g, ' ').strip();
+    },
+    
+    /**
+     * Return the description of the given option element
+     */
+    extractOption: function(element)
+    {
+        return {
+            isGroup: false,
+            element: element,
+            value: element.value,
+            isEmpty: blcg.Tools.isEmptyValue(element.value),
+            searchLabel: this.prepareSearchString(element.text)
+        };
+    },
+    
+    /**
+     * Return the descriptions of the options (and groups of options) held by the handled select element
+     */
+    extractOptions: function()
+    {
+        var options = [];
+        
+        $A(this.select.childNodes).each(function(node) {
+            var tagName = (node.tagName ? node.tagName.toLowerCase() : '');
+            
+            if (tagName == 'option') {
+                options.push(this.extractOption(node));
+            } else if (tagName == 'optgroup') {
+                var group = {
+                    isGroup: true,
+                    element: node,
+                    searchLabel: this.prepareSearchString(node.label || ''),
+                    options: []
+                };
+                
+                $A(node.childNodes).each(function(subNode) {
+                    if (subNode.tagName && (subNode.tagName.toLowerCase() == 'option')) {
+                        group.options.push(this.extractOption(subNode));
+                    }
+                }.bind(this));
+                
+                options.push(group);
+            }
+        }.bind(this));
+        
+        return options;
+    },
+    
+    /**
+     * Return the number of options that hold an actual value
+     */
+    countSelectableOptions: function(options)
+    {
+        return this.getSelectableValues(options).length;
+    },
+    
+    /**
+     * Return the values of the options that hold an actual value
+     */
+    getSelectableValues: function(options)
+    {
+        var values = [];
+        
+        $A(options).each(function(option) {
+            if (option.isGroup) {
+                values = values.concat(this.getSelectableValues(option.options));
+            } else if (!option.isEmpty) {
+                values.push(option.value);
+            }
+        }.bind(this));
+        
+        return values;
+    },
+    
+    /**
+     * Return the values that are currently selected in the handled select element
+     */
+    getSelectedValues: function()
+    {
+        var values = [];
+        
+        $A(this.select.options).each(function(option) {
+            if (option.selected) {
+                values.push(option.value);
+            }
+        });
+        
+        return values;
+    },
+    
+    /**
+     * Build the search field and its container, and move the handled select element into the latter
+     */
+    build: function()
+    {
+        var placeholder = this.getPlaceholder();
+        
+        this.wrapper = new Element('div', {
+            'class': this.config.wrapperClassName + ' ' + this.config.layoutClassName
+        });
+        
+        var searchBox = new Element('div', { 'class': this.config.searchClassName });
+        
+        this.input = new Element('input', {
+            'type': 'text',
+            'class': this.config.inputClassName,
+            'autocomplete': 'off',
+            'placeholder': placeholder,
+            'title': placeholder
+        });
+        
+        this.counter = new Element('span', { 'class': this.config.counterClassName });
+        
+        searchBox.appendChild(this.input);
+        searchBox.appendChild(this.counter);
+        this.wrapper.appendChild(searchBox);
+        
+        this.select.insert({ before: this.wrapper });
+        this.wrapper.appendChild(this.select);
+        this.select.addClassName(this.config.enhancedClassName);
+        
+        this.input.observe('keydown', this.onInputKeyDown.bind(this));
+        this.input.observe('keyup',   this.onInputChange.bind(this));
+        this.input.observe('input',   this.onInputChange.bind(this));
+        this.select.observe('change', this.onSelectChange.bind(this));
+        
+        this.updateCounter(this.optionsCount);
+    },
+    
+    getPlaceholder: function()
+    {
+        return (this.config.placeholder ? this.config.placeholder : blcg.Tools.translate('Filter options'));
+    },
+    
+    getNoResultLabel: function()
+    {
+        return (this.config.noResultLabel ? this.config.noResultLabel : blcg.Tools.translate('No matching option'));
+    },
+    
+    /**
+     * Return whether the given option matches all the given search tokens
+     */
+    isMatchingOption: function(option, tokens, isMatchingGroup)
+    {
+        if ((tokens.length === 0) || isMatchingGroup) {
+            return true;
+        }
+        for (var i = 0, l = tokens.length; i < l; i++) {
+            if (option.searchLabel.indexOf(tokens[i]) < 0) {
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    /**
+     * Return whether the given option must be displayed.
+     * Empty and selected options are always kept, so that the current value can neither be lost nor be unresettable
+     */
+    isKeptOption: function(option, isMatching)
+    {
+        return isMatching
+            || option.isEmpty
+            || (this.selectedValues.indexOf(option.value) >= 0);
+    },
+    
+    /**
+     * Detach all the child nodes from the given element
+     */
+    emptyElement: function(element)
+    {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    },
+    
+    /**
+     * Rebuild the options of the handled select element, keeping only those matching the given search query
+     */
+    applyFilter: function(query)
+    {
+        var tokens = (query === '' ? [] : query.split(' ').without(''));
+        var fragment = document.createDocumentFragment();
+        var matchingValues = [];
+        
+        this.query = query;
+        this.selectedValues = this.getSelectedValues();
+        this.emptyElement(this.select);
+        this.noResultOption = null;
+        
+        this.options.each(function(option) {
+            if (option.isGroup) {
+                var isMatchingGroup = this.isMatchingOption(option, tokens, false);
+                var keptOptions = [];
+                
+                option.options.each(function(subOption) {
+                    var isMatching = this.isMatchingOption(subOption, tokens, isMatchingGroup);
+                    
+                    if (this.isKeptOption(subOption, isMatching)) {
+                        keptOptions.push(subOption);
+                        
+                        if (isMatching && !subOption.isEmpty) {
+                            matchingValues.push(subOption.value);
+                        }
+                    }
+                }.bind(this));
+                
+                if (keptOptions.length > 0) {
+                    this.emptyElement(option.element);
+                    keptOptions.each(function(keptOption) {
+                        option.element.appendChild(keptOption.element);
+                    });
+                    fragment.appendChild(option.element);
+                }
+            } else {
+                var isMatching = this.isMatchingOption(option, tokens, false);
+                
+                if (this.isKeptOption(option, isMatching)) {
+                    fragment.appendChild(option.element);
+                    
+                    if (isMatching && !option.isEmpty) {
+                        matchingValues.push(option.value);
+                    }
+                }
+            }
+        }.bind(this));
+        
+        this.select.appendChild(fragment);
+        this.matchingValues = matchingValues;
+        
+        if (matchingValues.length === 0) {
+            this.noResultOption = new Element('option', {
+                'value': '',
+                'disabled': 'disabled',
+                'class': this.config.noResultOptionClassName
+            });
+            this.noResultOption.appendChild(document.createTextNode(this.getNoResultLabel()));
+            this.select.appendChild(this.noResultOption);
+            this.wrapper.addClassName(this.config.noResultClassName);
+        } else {
+            this.wrapper.removeClassName(this.config.noResultClassName);
+        }
+        
+        this.restoreSelection();
+        this.updateCounter(matchingValues.length);
+    },
+    
+    /**
+     * Re-apply the selected values to the currently displayed options
+     */
+    restoreSelection: function()
+    {
+        var values = this.selectedValues;
+        
+        $A(this.select.options).each(function(option) {
+            option.selected = (option !== this.noResultOption) && (values.indexOf(option.value) >= 0);
+        }.bind(this));
+    },
+    
+    /**
+     * Update the counter of matching options
+     */
+    updateCounter: function(matchesCount)
+    {
+        if (this.query === '') {
+            this.counter.update('');
+            this.counter.hide();
+        } else {
+            this.counter.update(matchesCount + '/' + this.optionsCount);
+            this.counter.show();
+        }
+    },
+    
+    /**
+     * Fire a change event on the handled select element, so that any external handler can be aware of the new value
+     */
+    fireSelectChange: function()
+    {
+        if (document.createEvent) {
+            var event = document.createEvent('HTMLEvents');
+            event.initEvent('change', true, true);
+            this.select.dispatchEvent(event);
+        } else if (this.select.fireEvent) {
+            this.select.fireEvent('onchange');
+        }
+    },
+    
+    onSelectChange: function()
+    {
+        this.selectedValues = this.getSelectedValues();
+    },
+    
+    onInputChange: function()
+    {
+        this.stopSearchTimeout();
+        this.searchTimeout = window.setTimeout(this.runSearch.bind(this), this.config.searchDelay);
+    },
+    
+    stopSearchTimeout: function()
+    {
+        if (this.searchTimeout) {
+            window.clearTimeout(this.searchTimeout);
+            this.searchTimeout = null;
+        }
+    },
+    
+    /**
+     * Apply the search query currently held by the search field, if it did change
+     */
+    runSearch: function()
+    {
+        this.stopSearchTimeout();
+        var query = this.prepareSearchString(this.input.value);
+        
+        if (query !== this.query) {
+            this.applyFilter(query);
+        }
+    },
+    
+    onInputKeyDown: function(event)
+    {
+        switch (event.keyCode) {
+            case Event.KEY_RETURN:
+                event.stop();
+                this.onEnterKey();
+                break;
+                
+            case Event.KEY_ESC:
+                if (this.input.value !== '') {
+                    event.stop();
+                    this.clear();
+                } else if (this.config.onEscape) {
+                    event.stop();
+                    this.config.onEscape(this);
+                }
+                break;
+                
+            case Event.KEY_DOWN:
+                event.stop();
+                this.runSearch();
+                this.focusSelect();
+                break;
+        }
+    },
+    
+    /**
+     * Select the only matching option if there is just one left, then let the context handle the key press
+     */
+    onEnterKey: function()
+    {
+        this.runSearch();
+        var hasAppliedValue = false;
+        
+        if (!this.select.multiple && (this.matchingValues.length == 1)) {
+            this.selectedValues = [this.matchingValues[0]];
+            this.restoreSelection();
+            this.fireSelectChange();
+            hasAppliedValue = true;
+        }
+        
+        if (this.config.gridObject) {
+            try {
+                this.config.gridObject.doFilter();
+            } catch (e) {}
+        }
+        if (this.config.onEnter) {
+            this.config.onEnter(this, hasAppliedValue);
+        }
+    },
+    
+    /**
+     * Reset the search field and display back all the options
+     */
+    clear: function()
+    {
+        this.stopSearchTimeout();
+        this.input.value = '';
+        
+        if (this.query !== '') {
+            this.applyFilter('');
+        }
+    },
+    
+    focusSearch: function()
+    {
+        this.input.activate();
+    },
+    
+    focusSelect: function()
+    {
+        this.select.focus();
+    }
+};
+
+Object.extend(blcg.SearchableSelect, {
+    STORAGE_KEY: 'blcg.searchableSelect',
+    
+    config: {
+        enabled: true,
+        minOptions: 10,
+        gridFilters: true,
+        editors: true
+    },
+    
+    setConfig: function(config)
+    {
+        Object.extend(this.config, config || {});
+    },
+    
+    isEnabled: function()
+    {
+        return !!this.config.enabled;
+    },
+    
+    getMinOptions: function()
+    {
+        var minOptions = parseInt(this.config.minOptions, 10);
+        return (isNaN(minOptions) || (minOptions < 1) ? 1 : minOptions);
+    },
+    
+    /**
+     * Return the number of options holding an actual value in the given select element
+     */
+    countSelectableOptions: function(select)
+    {
+        var count = 0;
+        
+        $A(select.options).each(function(option) {
+            if (!blcg.Tools.isEmptyValue(option.value)) {
+                count++;
+            }
+        });
+        
+        return count;
+    },
+    
+    /**
+     * Return whether the given select element should be made searchable
+     */
+    isEligible: function(select)
+    {
+        return (select = $(select))
+            && !select.retrieve(this.STORAGE_KEY, null)
+            && (select.readAttribute('blcg-searchable') !== '0')
+            && (this.countSelectableOptions(select) > this.getMinOptions());
+    },
+    
+    /**
+     * Make the given select element searchable, if it is eligible
+     */
+    apply: function(select, config)
+    {
+        return (this.isEnabled() && this.isEligible(select))
+            ? new blcg.SearchableSelect(select, config)
+            : null;
+    },
+    
+    /**
+     * Make all the eligible select elements from the given container searchable
+     */
+    applyToContainer: function(container, config, selector)
+    {
+        var widgets = [];
+        
+        if (!this.isEnabled() || !(container = $(container))) {
+            return widgets;
+        }
+        
+        container.select(selector || 'select').each(function(select) {
+            var widget = this.apply(select, config);
+            
+            if (widget) {
+                widgets.push(widget);
+            }
+        }.bind(this));
+        
+        return widgets;
+    }
+});
+
+/**
+ * Handler in charge of making the dropdown filters of the admin grids searchable,
+ * either at page load or after a grid has been reloaded with AJAX
+ */
+blcg.SearchableSelect.GridFilters = {
+    isInitialized: false,
+    selector: 'tr.filter select',
+    
+    init: function()
+    {
+        if (this.isInitialized) {
+            return;
+        }
+        
+        this.isInitialized = true;
+        this.wrapGridInit();
+        this.applyTo(document.body);
+    },
+    
+    /**
+     * Wrap varienGrid.initGrid(), which is also called each time a grid is reloaded with AJAX,
+     * so that the newly displayed filters can be handled too
+     */
+    wrapGridInit: function()
+    {
+        if ((typeof(varienGrid) == 'undefined')
+            || !varienGrid.prototype
+            || varienGrid.prototype.blcgHasSearchableFilters) {
+            return;
+        }
+        
+        var baseInitGrid = varienGrid.prototype.initGrid;
+        var handler = this;
+        
+        varienGrid.prototype.initGrid = function() {
+            var result = baseInitGrid.apply(this, arguments);
+            
+            try {
+                handler.applyTo($(this.containerId), this);
+            } catch (e) {}
+            
+            return result;
+        };
+        
+        varienGrid.prototype.blcgHasSearchableFilters = true;
+    },
+    
+    applyTo: function(container, gridObject)
+    {
+        if (!blcg.SearchableSelect.isEnabled()
+            || !blcg.SearchableSelect.config.gridFilters
+            || !(container = $(container))) {
+            return [];
+        }
+        
+        var widgets = [];
+        
+        container.select(this.selector).each(function(select) {
+            var widget = blcg.SearchableSelect.apply(select, {
+                layoutClassName: 'blcg-searchable-select-block',
+                gridObject: (gridObject ? gridObject : this.findGridObject(select))
+            });
+            
+            if (widget) {
+                widgets.push(widget);
+            }
+        }.bind(this));
+        
+        return widgets;
+    },
+    
+    /**
+     * Return the grid object to which belongs the given element, if it can be found
+     * (grid objects are named after the ID of their container, as done by Mage_Adminhtml_Block_Widget_Grid)
+     */
+    findGridObject: function(element)
+    {
+        var gridObject = null;
+        var table = element.up('table');
+        var tableId = (table ? table.id : '');
+        
+        if (tableId && (tableId.length > 6) && (tableId.substring(tableId.length - 6) == '_table')) {
+            gridObject = this.getGridObject(tableId.substring(0, tableId.length - 6));
+        }
+        
+        var container = element.up();
+        
+        while (!gridObject && container && (container.tagName.toLowerCase() != 'body')) {
+            if (container.id) {
+                gridObject = this.getGridObject(container.id);
+            }
+            container = container.up();
+        }
+        
+        return gridObject;
+    },
+    
+    getGridObject: function(containerId)
+    {
+        try {
+            return blcg.Grid.Tools.getGridObject(containerId + 'JsObject');
+        } catch (e) {}
+        
+        return null;
+    }
+};
+
+document.observe('dom:loaded', function() {
+    blcg.SearchableSelect.GridFilters.init();
+});
+
 blcg.EventsManager = Class.create();
 blcg.EventsManager.prototype = {
     initialize: function()
@@ -2668,7 +3314,8 @@ blcg.Grid.Editor.prototype = {
             requiredCellClassName: 'blcg-column-editor-editing-required',
             updatedCellClassName: 'blcg-column-editor-updated', 
             requiredMarkerSelector: '.blcg-editor-required-marker',
-            inputtableFieldsSelector: '.select, .required-entry, .input-text'
+            inputtableFieldsSelector: '.select, .required-entry, .input-text',
+            searchableSelects: true
         }, config || {});
         
         if (!Object.isArray(this.config.additionalParams)) {
@@ -2978,6 +3625,39 @@ blcg.Grid.Editor.prototype = {
         }
     },
     
+    /**
+     * Make the dropdowns with lots of options from the given edit form searchable
+     * 
+     * @param Element form Edit form
+     * @return blcg.SearchableSelect[]
+     */
+    initFormSearchableSelects: function(form)
+    {
+        if (!this.config.searchableSelects
+            || (typeof(blcg.SearchableSelect) == 'undefined')
+            || !blcg.SearchableSelect.config.editors) {
+            return [];
+        }
+        
+        return blcg.SearchableSelect.applyToContainer(form, {
+            layoutClassName: 'blcg-searchable-select-inline',
+            
+            onEnter: function(searchableSelect, hasAppliedValue) {
+                if (hasAppliedValue) {
+                    // Behave like the other fields, for which the ENTER key validates the edition
+                    this.validateEdit();
+                } else {
+                    // Several options are still matching : let the user choose the right one
+                    searchableSelect.focusSelect();
+                }
+            }.bind(this),
+            
+            onEscape: function() {
+                this.cancelEdit();
+            }.bind(this)
+        });
+    },
+    
     editCell: function(cell)
     {
         if (this.isRequestRunning) {
@@ -3019,6 +3699,7 @@ blcg.Grid.Editor.prototype = {
                                 cell.innerHTML = '';
                                 cell.appendChild(form);
                                 blcg.Tools.executeNodeJS(cell);
+                                this.initFormSearchableSelects(form);
                                 
                                 this.fillCellOverlay(cell);
                                 this.positionCellOverlay(cell, null, this.compareCells(cell, this.shortHoveredCell));
@@ -3057,7 +3738,15 @@ blcg.Grid.Editor.prototype = {
                                 }.bind(this));
                                 
                                 if (formInputs.size() > 0) {
-                                    formInputs.first().activate();
+                                    var firstInput = formInputs.first();
+                                    var searchableSelect = firstInput.retrieve(blcg.SearchableSelect.STORAGE_KEY, null);
+                                    
+                                    if (searchableSelect) {
+                                        // Let the value be searched for right away, rather than only selectable
+                                        searchableSelect.focusSearch();
+                                    } else {
+                                        firstInput.activate();
+                                    }
                                 }
                             } catch (e) {
                                 this.cancelEdit();

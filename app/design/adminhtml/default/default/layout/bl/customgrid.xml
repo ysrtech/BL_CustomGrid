@@ -27,6 +27,7 @@
         </reference>
         
         <reference name="before_body_end">
+            <block type="customgrid/js_config" name="blcg.js.config" />
             <block type="customgrid/messages" name="blcg.messages" />
         </reference>
     </default>

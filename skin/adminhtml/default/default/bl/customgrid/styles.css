@@ -462,6 +462,53 @@ div.blcg-collapseable a.open { background:url(images/collapse_arrow_up.png) 100%
 .dialog.blcg-maximized-popup-window .blcg_content iframe { width:100% !important;  }
 .adminhtml-blcg-grid-columnslistform { background:#fff; }
 
+/* SEARCHABLE DROPDOWNS */
+
+.blcg-searchable-select { position:relative; }
+.blcg-searchable-select-block { display:block; }
+.blcg-searchable-select-inline { display:inline-block; vertical-align:top; min-width:130px; }
+
+.blcg-searchable-select .blcg-searchable-select-search {
+    position:relative;
+    display:block;
+    margin:0 0 2px;
+}
+
+.blcg-searchable-select input.blcg-searchable-select-input {
+    width:100%;
+    height:18px;
+    margin:0;
+    padding:1px 32px 1px 4px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border:1px solid #b6b6b6;
+    background:#fff;
+    color:#2f2f2f;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:11px;
+    line-height:14px;
+}
+
+.blcg-searchable-select input.blcg-searchable-select-input:focus { border-color:#5b8bbd; }
+
+.blcg-searchable-select .blcg-searchable-select-counter {
+    position:absolute;
+    right:4px;
+    top:0;
+    line-height:18px;
+    color:#888;
+    font-size:10px;
+    pointer-events:none;
+}
+
+.blcg-searchable-select-no-result input.blcg-searchable-select-input { border-color:#d40707; background:#fff7f7; }
+.blcg-searchable-select-no-result .blcg-searchable-select-counter { color:#d40707; }
+.blcg-searchable-select option.blcg-searchable-select-no-result-option { color:#888; font-style:italic; }
+
+tr.filter .blcg-searchable-select select.blcg-searchable-select-enhanced { width:100%; }
+.blcg-searchable-select-inline select.blcg-searchable-select-enhanced { min-width:100%; }
+
 /* SPECIFIC STYLES */
 
 #sales_order_grid .grid .order-tables tr.headings,

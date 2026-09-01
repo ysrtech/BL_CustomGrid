@@ -84,6 +84,19 @@ blcgGridEditorForm.submit = function(url) {
     }
     return false;
 }.bind(blcgGridEditorForm);
+
+document.observe('dom:loaded', function() {
+    // Make the dropdowns holding lots of options searchable, as it is done for the in-grid edit forms
+    if ((typeof(blcg) != 'undefined')
+        && (typeof(blcg.SearchableSelect) != 'undefined')
+        && blcg.SearchableSelect.config.editors) {
+        $$('.blcg-column-editor-form').each(function(formContainer) {
+            blcg.SearchableSelect.applyToContainer(formContainer, {
+                layoutClassName: 'blcg-searchable-select-inline'
+            });
+        });
+    }
+});
 //]]>
 </script>
     <?php echo $this->getFormScripts() ?>

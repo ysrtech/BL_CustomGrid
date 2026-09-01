@@ -18,6 +18,8 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     const GRID_EXCEPTION_HANDLING_MODE_ALLOW = 'allow';
     const GRID_EXCEPTION_HANDLING_MODE_EXCLUDE = 'exclude';
     
+    const DEFAULT_SEARCHABLE_DROPDOWNS_THRESHOLD = 10;
+    
     /**
      * Configuration paths
      */
@@ -28,6 +30,8 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     const CONFIG_PATH_EXCEPTIONS_HANDLING_MODE = 'customgrid/global/exceptions_handling_mode';
     const CONFIG_PATH_STORE_PARAMETER = 'customgrid/global/store_parameter';
     const CONFIG_PATH_SORT_WITH_DND   = 'customgrid/global/sort_with_dnd';
+    const CONFIG_PATH_SEARCHABLE_DROPDOWNS = 'customgrid/global/searchable_dropdowns';
+    const CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD = 'customgrid/global/searchable_dropdowns_threshold';
     
     // Customization parameters
     const CONFIG_PATH_DISPLAY_SYSTEM_PART        = 'customgrid/customization_params/display_system_part';
@@ -209,6 +213,27 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     public function getSortWithDnd()
     {
         return Mage::getStoreConfigFlag(self::CONFIG_PATH_SORT_WITH_DND);
+    }
+    
+    /**
+     * Getter for the config value "General" > "Add A Search Field To Long Dropdowns"
+     *
+     * @return bool
+     */
+    public function getSearchableDropdowns()
+    {
+        return Mage::getStoreConfigFlag(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS);
+    }
+    
+    /**
+     * Getter for the config value "General" > "Minimum Number Of Options For Searchable Dropdowns"
+     *
+     * @return int
+     */
+    public function getSearchableDropdownsThreshold()
+    {
+        $threshold = (int) Mage::getStoreConfig(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD);
+        return ($threshold > 0 ? $threshold : self::DEFAULT_SEARCHABLE_DROPDOWNS_THRESHOLD);
     }
     
     /**

@@ -1,0 +1,52 @@
+<?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   BL
+ * @package    BL_CustomGrid
+ * @copyright  Copyright (c) 2015 Benoît Leulliette <benoit.leulliette@gmail.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+class BL_CustomGrid_Block_Js_Config extends Mage_Adminhtml_Block_Template
+{
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setTemplate('bl/customgrid/js/config.phtml');
+    }
+    
+    /**
+     * Return the config helper
+     * 
+     * @return BL_CustomGrid_Helper_Config
+     */
+    protected function _getConfigHelper()
+    {
+        return $this->helper('customgrid/config');
+    }
+    
+    /**
+     * Return the JSON-encoded config values used by the searchable dropdowns
+     * 
+     * @return string
+     */
+    public function getSearchableSelectJsonConfig()
+    {
+        /** @var $coreHelper Mage_Core_Helper_Data */
+        $coreHelper = $this->helper('core');
+        $configHelper = $this->_getConfigHelper();
+        
+        return $coreHelper->jsonEncode(
+            array(
+                'enabled'    => $configHelper->getSearchableDropdowns(),
+                'minOptions' => $configHelper->getSearchableDropdownsThreshold(),
+            )
+        );
+    }
+}

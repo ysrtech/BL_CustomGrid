@@ -87,6 +87,7 @@ class BL_CustomGrid_Model_Reflection_Property extends ReflectionProperty
      * 
      * @param bool $accessible Whether the property should be accessible
      */
+    #[\ReturnTypeWillChange]
     public function setAccessible($accessible)
     {
         $this->_hasForcedAccessibility = (bool) $accessible;
@@ -153,6 +154,7 @@ class BL_CustomGrid_Model_Reflection_Property extends ReflectionProperty
         return (!is_null($object) ? call_user_func($callback, $object) : call_user_func($callback));
     }
     
+    #[\ReturnTypeWillChange]
     public function getValue($object = null)
     {
         return $this->_hasForcedAccessibility && !empty($this->_accessibleObject)
@@ -190,6 +192,7 @@ class BL_CustomGrid_Model_Reflection_Property extends ReflectionProperty
         }
     }
     
+    #[\ReturnTypeWillChange]
     public function setValue($arg1 = null, $arg2 = null)
     {
         $argsCount = func_num_args();
