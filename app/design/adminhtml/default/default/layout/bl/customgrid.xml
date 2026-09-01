@@ -77,6 +77,9 @@
     <adminhtml_blcg_grid_columns_list_form>
          <update handle="popup" />
          <remove name="footer" />
+         <reference name="root">
+             <action method="addBodyClass"><class>blcg-window-form-page</class></action>
+         </reference>
     </adminhtml_blcg_grid_columns_list_form>
     
     <adminhtml_blcg_column_renderer_collection_index>
@@ -185,6 +188,9 @@
         <update handle="popup" />
         <remove name="footer" />
         <remove name="blcg.messages" />
+        <reference name="root">
+            <action method="addBodyClass"><class>blcg-window-form-page</class></action>
+        </reference>
         <reference name="content">
             <block type="customgrid/widget_grid_editor_form_container" name="blcg.grid_editor.form_container" />
         </reference>

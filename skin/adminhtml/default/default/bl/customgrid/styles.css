@@ -449,18 +449,33 @@ div.blcg-collapseable a.open { background:url(images/collapse_arrow_up.png) 100%
     height:auto !important;
 }
 
+/* The remaining height is the one left by the title bar (28px) and the status bar (15px) */
 .dialog.blcg-maximized-popup-window table.table_window.mid {
     width:100% !important;
     height:100% !important;
-    height:-moz-calc(100% - 40px) !important;
-    height:-o-calc(100% - 40px) !important;
-    height:-webkit-calc(100% - 40px) !important;
-    height:calc(100% - 40px) !important;
+    height:-moz-calc(100% - 43px) !important;
+    height:-o-calc(100% - 43px) !important;
+    height:-webkit-calc(100% - 43px) !important;
+    height:calc(100% - 43px) !important;
 }
 
-.dialog.blcg-maximized-popup-window .blcg_content { overflow:hidden !important; }
-.dialog.blcg-maximized-popup-window .blcg_content iframe { width:100% !important;  }
+.dialog.blcg-maximized-popup-window td.blcg_content { overflow:hidden !important; height:100% !important; }
+.dialog.blcg-maximized-popup-window td.blcg_content > iframe { width:100% !important; height:100% !important; }
+.dialog.blcg-maximized-popup-window td.blcg_content > div.blcg_content { height:100% !important; overflow:auto !important; }
 .adminhtml-blcg-grid-columnslistform { background:#fff; }
+
+/* Form pages displayed inside a window : their content must use the whole height of the window */
+body.blcg-window-form-page,
+body.blcg-window-form-page .wrapper,
+body.blcg-window-form-page .wrapper-popup,
+body.blcg-window-form-page .middle {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    min-height:100vh;
+}
+
+body.blcg-window-form-page { margin:0; }
 
 /* SEARCHABLE DROPDOWNS */
 
