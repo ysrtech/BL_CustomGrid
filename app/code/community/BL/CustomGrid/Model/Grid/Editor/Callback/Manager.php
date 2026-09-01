@@ -219,7 +219,7 @@ class BL_CustomGrid_Model_Grid_Editor_Callback_Manager extends BL_CustomGrid_Mod
     public function getWorkerActionSortedCallbacks(
         $workerType,
         $actionType,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null,
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null,
         array $additionalCallbacks = array()
     ) {
         $callbacks = array_merge_recursive(

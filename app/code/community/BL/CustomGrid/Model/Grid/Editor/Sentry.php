@@ -87,8 +87,8 @@ class BL_CustomGrid_Model_Grid_Editor_Sentry extends BL_CustomGrid_Model_Grid_Ed
      */
     public function checkBaseUserEditPermissions(
         BL_CustomGrid_Model_Grid $gridModel,
-        Mage_Adminhtml_Block_Widget_Grid $gridBlock = null,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null
+        ?Mage_Adminhtml_Block_Widget_Grid $gridBlock = null,
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null
     ) {
         return $this->_runCallbackedAction(
             self::ACTION_TYPE_CHECK_BASE_USER_EDIT_PERMISSIONS,

@@ -561,7 +561,7 @@ abstract class BL_CustomGrid_Model_Grid_Type_Abstract extends BL_CustomGrid_Obje
      * @param Mage_Adminhtml_Block_Widget_Grid $gridBlock Grid block, null at first call (before block creation)
      * @return BL_CustomGrid_Model_Grid_Type_Abstract
      */
-    public function beforeGridExport($format, Mage_Adminhtml_Block_Widget_Grid $gridBlock = null)
+    public function beforeGridExport($format, ?Mage_Adminhtml_Block_Widget_Grid $gridBlock = null)
     {
         return $this;
     }

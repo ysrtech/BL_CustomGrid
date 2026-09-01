@@ -74,8 +74,8 @@ class BL_CustomGrid_Model_Grid_Editor_Tax_Class extends BL_CustomGrid_Model_Grid
     public function checkBaseUserEditPermissions(
         BL_CustomGrid_Model_Grid $gridModel,
         $previousReturnedValue,
-        Mage_Adminhtml_Block_Widget_Grid $gridBlock = null,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null
+        ?Mage_Adminhtml_Block_Widget_Grid $gridBlock = null,
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null
     ) {
         $result = ($previousReturnedValue === true);
         

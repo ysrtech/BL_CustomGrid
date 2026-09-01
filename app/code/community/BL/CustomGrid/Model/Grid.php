@@ -776,7 +776,7 @@ class BL_CustomGrid_Model_Grid extends Mage_Core_Model_Abstract
      */
     protected function _handlePermanentProfileChange(
         BL_CustomGrid_Model_Grid_Profile $newProfile,
-        BL_CustomGrid_Model_Grid_Profile $previousProfile = null
+        ?BL_CustomGrid_Model_Grid_Profile $previousProfile = null
     ) {
         $this->_reapplyProfileRememberedValues($newProfile);
         

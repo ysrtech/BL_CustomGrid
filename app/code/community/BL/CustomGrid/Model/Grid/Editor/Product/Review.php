@@ -124,7 +124,7 @@ class BL_CustomGrid_Model_Grid_Editor_Product_Review extends BL_CustomGrid_Model
     public function checkBaseUserEditPermissions(
         BL_CustomGrid_Model_Grid $gridModel,
         $previousReturnedValue,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null
     ) {
         $result = ($previousReturnedValue === true);
         

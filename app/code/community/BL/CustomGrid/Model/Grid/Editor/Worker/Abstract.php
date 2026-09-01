@@ -83,7 +83,7 @@ abstract class BL_CustomGrid_Model_Grid_Editor_Worker_Abstract extends BL_Custom
      */
     protected function _getActionCallbacksCacheKey(
         $actionType,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null
     ) {
         return 'action_callbacks/' . $actionType . '/' . (!is_null($context) ? $context->getKey() : '_base_');
     }
@@ -101,7 +101,7 @@ abstract class BL_CustomGrid_Model_Grid_Editor_Worker_Abstract extends BL_Custom
     protected function _getActionCallbacks(
         $actionType,
         $mainCallable = null,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null,
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null,
         array $defaultCallbacks = array(),
         $cacheable = false
     ) {
@@ -168,7 +168,7 @@ abstract class BL_CustomGrid_Model_Grid_Editor_Worker_Abstract extends BL_Custom
         $actionType,
         array $availableParams,
         $mainCallable = null,
-        BL_CustomGrid_Model_Grid_Editor_Context $context = null,
+        ?BL_CustomGrid_Model_Grid_Editor_Context $context = null,
         array $defaultCallbacks = array(),
         $cacheableCallbacks = false
     ) {

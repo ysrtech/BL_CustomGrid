@@ -523,7 +523,7 @@ class BL_CustomGrid_Block_Widget_Grid_Config_Columns_List extends Mage_Adminhtml
      * @param BL_CustomGrid_Model_Grid_Column $column Grid column
      * @return string
      */
-    protected function getStoreSelectHtml(BL_CustomGrid_Model_Grid_Column $column = null)
+    protected function getStoreSelectHtml(?BL_CustomGrid_Model_Grid_Column $column = null)
     {
         $jsOutput  = is_null($column);
         $columnId  = ($jsOutput ? $this->getIdPlaceholder() : $column->getId());
@@ -687,7 +687,7 @@ class BL_CustomGrid_Block_Widget_Grid_Config_Columns_List extends Mage_Adminhtml
      * @param BL_CustomGrid_Model_Grid_Column $column Grid column
      * @return string
      */
-    public function getAttributesSelectHtml(BL_CustomGrid_Model_Grid_Column $column = null)
+    public function getAttributesSelectHtml(?BL_CustomGrid_Model_Grid_Column $column = null)
     {
         $htmlId = $this->getHtmlId();
         $jsOutput  = is_null($column);

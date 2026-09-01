@@ -354,7 +354,7 @@ class BL_CustomGrid_Model_Custom_Column_Applier extends BL_CustomGrid_Model_Cust
         $columnIndex,
         array $params,
         Mage_Core_Model_Store $store,
-        BL_CustomGrid_Object $renderer = null
+        ?BL_CustomGrid_Object $renderer = null
     ) {
         $customColumn = $this->getCustomColumn();
         $columnMethodParams   = array($gridBlock, $gridModel, $columnBlockId, $columnIndex, $params, $store);
@@ -402,7 +402,7 @@ class BL_CustomGrid_Model_Custom_Column_Applier extends BL_CustomGrid_Model_Cust
         $columnIndex,
         array $params,
         Mage_Core_Model_Store $store,
-        BL_CustomGrid_Object $renderer = null
+        ?BL_CustomGrid_Object $renderer = null
     ) {
         try {
             if (!$this->_verifyGridElement('block', $gridBlock->getCollection(), $gridBlock, $gridModel)) {
