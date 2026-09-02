@@ -87,8 +87,8 @@ class BL_CustomGrid_Block_Widget_Grid_Column_Renderer_Product_Categories extends
     {
         return $this->_renderRow(
             $row,
-            $this->htmlEscape($this->getColumn()->getLevelSeparator()),
-            $this->htmlEscape($this->getColumn()->getResultSeparator())
+            $this->escapeHtml($this->getColumn()->getLevelSeparator()),
+            $this->escapeHtml($this->getColumn()->getResultSeparator())
         );
     }
     

@@ -21,8 +21,8 @@
         </div>
         <dl class="blcg-collection-renderers-descriptions-list">
         <?php foreach ($this->_getAvailableRenderers() as $_renderer): ?>
-            <dt><?php echo $this->htmlEscape($_renderer['name']) ?></dt>
-            <dd><?php if ($_renderer['description'] != ''): ?><?php echo $this->htmlEscape($_renderer['description']) ?><?php else: ?><?php echo $this->__('No Description') ?><?php endif ?></dd>
+            <dt><?php echo $this->escapeHtml($_renderer['name']) ?></dt>
+            <dd><?php if ($_renderer['description'] != ''): ?><?php echo $this->escapeHtml($_renderer['description']) ?><?php else: ?><?php echo $this->__('No Description') ?><?php endif ?></dd>
         <?php endforeach ?>
         </dl>
     </div>

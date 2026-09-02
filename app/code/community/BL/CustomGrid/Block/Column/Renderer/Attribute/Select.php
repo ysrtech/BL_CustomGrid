@@ -70,7 +70,7 @@ class BL_CustomGrid_Block_Column_Renderer_Attribute_Select
                 $values['windowConfig'] = array(
                     'width'  => $renderer['config_window']['width'],
                     'height' => $renderer['config_window']['height'],
-                    'title'  => $this->htmlEscape($renderer['config_window']['title']),
+                    'title'  => $this->escapeHtml($renderer['config_window']['title']),
                 );
             }
             $config[] = $values;

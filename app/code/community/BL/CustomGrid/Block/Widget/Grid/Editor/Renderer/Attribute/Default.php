@@ -51,7 +51,7 @@ class BL_CustomGrid_Block_Widget_Grid_Editor_Renderer_Attribute_Default extends 
                     
                 } else {
                     // Use escaped raw value for everything else
-                    $renderedValue = $this->htmlEscape($renderableValue);
+                    $renderedValue = $this->escapeHtml($renderableValue);
                 }
             }
         } else {

@@ -94,7 +94,7 @@
                     <li>
                         <input type="checkbox" value="1" name="remove_default_params[sort]" id="<?php echo $this->getHtmlId() ?>-grid-remove-sort" />
                         <label for="<?php echo $this->getHtmlId() ?>-grid-remove-sort">
-                            <?php echo $this->__('Sort') ?> (<strong><?php if ($_gridModel->getDefaultSort()): ?><?php echo $this->__('column "%s"', $this->htmlEscape($_gridModel->getColumnHeader($_gridModel->getDefaultSort()))) ?><?php else: ?><?php echo $this->__('none') ?><?php endif ?></strong>)
+                            <?php echo $this->__('Sort') ?> (<strong><?php if ($_gridModel->getDefaultSort()): ?><?php echo $this->__('column "%s"', $this->escapeHtml($_gridModel->getColumnHeader($_gridModel->getDefaultSort()))) ?><?php else: ?><?php echo $this->__('none') ?><?php endif ?></strong>)
                         </label>
                     </li>
                     <li>
@@ -159,7 +159,7 @@
                                 endforeach;
                             ?>
                             <div class="blcg-custom-columns-group-label <?php if ($_startDisplayed): ?>blcg-custom-columns-group-label-on<?php else: ?>blcg-custom-columns-group-label-off<?php endif ?>">
-                                <?php echo $this->htmlEscape($_group) ?>
+                                <?php echo $this->escapeHtml($_group) ?>
                                 <span><?php echo $this->__('(%s/%s)', $_displayedCount, $_totalCount) ?></span>
                             </div>
                             <div class="blcg-custom-columns-list" <?php if (!$_startDisplayed): ?>style="display:none;"<?php endif ?>>
@@ -169,9 +169,9 @@
                     <?php for ($i=1; $i<2; $i++): ?>
                     <?php foreach ($_customColumns[$_groupId] as $_column): ?>
                         <div class="blcg-custom-columns-column">
-                            <label title="<?php echo $this->htmlEscape($_column->getName()) ?>">
+                            <label title="<?php echo $this->escapeHtml($_column->getName()) ?>">
                                 <input type="checkbox" name="custom_columns[]" value="<?php echo $_column->getId() ?>"<?php if ($_column->getSelected()): ?> checked="checked"<?php endif ?> />
-                                <span><?php echo $this->htmlEscape($_column->getName()) ?></span>
+                                <span><?php echo $this->escapeHtml($_column->getName()) ?></span>
                             </label>
                             <div class="blcg-custom-columns-column-buttons">
                                 <?php if (($_warning = trim($_column->getWarning())) !== ''): ?>
@@ -230,7 +230,7 @@
                         <select name="export[format]" id="<?php echo $this->getHtmlId() ?>-additional-export-format">
                             <option value=""></option>
                             <?php foreach ($this->getExportTypes() as $_type): ?>
-                                <option value="<?php echo $_type->getUrl() ?>"><?php echo $this->htmlEscape($_type->getLabel()) ?></option>
+                                <option value="<?php echo $_type->getUrl() ?>"><?php echo $this->escapeHtml($_type->getLabel()) ?></option>
                             <?php endforeach ?>
                         </select>
                     </li>
@@ -253,7 +253,7 @@
                 </ul>
                 <div class="no-display">
                 <?php foreach ($this->getExportAdditionalParams() as $_name => $_value): ?>
-                    <input type="hidden" name="<?php echo $this->htmlEscape($_name) ?>" value="<?php echo $this->htmlEscape($_value) ?>" />
+                    <input type="hidden" name="<?php echo $this->escapeHtml($_name) ?>" value="<?php echo $this->escapeHtml($_value) ?>" />
                 <?php endforeach ?>
                 </div>
                 <div class="blcg-custom-grid-config-additional-part-actions">

@@ -159,7 +159,7 @@
                         <td>
                             <?php if ($_column->isAttribute()): ?>
                                 <?php if ($_column->isMissing()): ?>
-                                    <em><?php echo $this->htmlEscape($_column->getIndex()) ?></em>
+                                    <em><?php echo $this->escapeHtml($_column->getIndex()) ?></em>
                                 <?php else: ?>
                                     <?php echo $this->getAttributesSelectHtml($_column) ?>
                                 <?php endif ?>
@@ -202,35 +202,35 @@ new blcg.Grid.CustomColumn.ConfigButton(
                         <?php endif ?>
                         <td>
                             <?php if ($_value = $this->getColumnLockedValue($_columnBlockId, 'header')): ?>
-                                <span class="nobr"><?php echo $this->htmlEscape($_value) ?></span>
+                                <span class="nobr"><?php echo $this->escapeHtml($_value) ?></span>
                             <?php else: ?>
-                                <input name="columns[<?php echo $_columnId ?>][header]" class="input-text" type="text" value="<?php echo $this->htmlEscape($_column->getHeader()) ?>" />
+                                <input name="columns[<?php echo $_columnId ?>][header]" class="input-text" type="text" value="<?php echo $this->escapeHtml($_column->getHeader()) ?>" />
                             <?php endif ?>
                         </td>
                         <td>
                             <?php if ($_value = $this->getColumnLockedValue($_columnId, 'width')): ?>
-                                <span class="nobr"><?php echo $this->htmlEscape($_value) ?></span>
+                                <span class="nobr"><?php echo $this->escapeHtml($_value) ?></span>
                             <?php else: ?>
-                                <input name="columns[<?php echo $_columnId ?>][width]" class="input-text" type="text" value="<?php echo $this->htmlEscape($_column->getWidth()) ?>" />
+                                <input name="columns[<?php echo $_columnId ?>][width]" class="input-text" type="text" value="<?php echo $this->escapeHtml($_column->getWidth()) ?>" />
                             <?php endif ?>
                         </td>
                         <td>
                             <?php if ($_value = $this->getColumnLockedValue($_columnId, 'align')): ?>
                                 <?php if (isset($_alignments[$_value])): ?>
-                                    <span class="nobr"><?php echo $this->htmlEscape($_alignments[$_value]) ?></span>
+                                    <span class="nobr"><?php echo $this->escapeHtml($_alignments[$_value]) ?></span>
                                 <?php endif ?>
                             <?php else: ?>
                                 <select name="columns[<?php echo $_columnId ?>][align]" class="select validate-select">
                                 <?php foreach ($_alignments as $_value => $_label): ?>
-                                    <option value="<?php echo $this->htmlEscape($_value) ?>"<?php if ($_value == $_column->getAlign()): ?> selected="selected"<?php endif ?>>
-                                        <?php echo $this->htmlEscape($_label) ?>
+                                    <option value="<?php echo $this->escapeHtml($_value) ?>"<?php if ($_value == $_column->getAlign()): ?> selected="selected"<?php endif ?>>
+                                        <?php echo $this->escapeHtml($_label) ?>
                                     </option>
                                 <?php endforeach ?>
                                 </select>
                             <?php endif ?>
                         </td>
                         <td>
-                            <input name="columns[<?php echo $_columnId ?>][order]" id="<?php echo $this->getOrderInputHtmlId($_columnId) ?>" class="input-text validate-number" type="text" <?php if ($this->getUseDragNDrop()): ?>readonly="readonly" value="<?php echo $_i*$this->getColumnsOrderPitch() ?>"<?php else: ?>value="<?php echo $this->htmlEscape($_column->getOrder()) ?>"<?php endif ?> />
+                            <input name="columns[<?php echo $_columnId ?>][order]" id="<?php echo $this->getOrderInputHtmlId($_columnId) ?>" class="input-text validate-number" type="text" <?php if ($this->getUseDragNDrop()): ?>readonly="readonly" value="<?php echo $_i*$this->getColumnsOrderPitch() ?>"<?php else: ?>value="<?php echo $this->escapeHtml($_column->getOrder()) ?>"<?php endif ?> />
                         </td>
                         <td class="a-center">
                             <?php echo ($_column->isMissing() ? '<strong>'.$this->__('Yes').'</strong>' : $this->__('No')) ?>
@@ -259,7 +259,7 @@ var blcgAttributeSelectTemplate = <?php echo $this->getAttributesSelectHtml() ?>
 
 var blcgAlignmentSelectTemplate = '<select name="columns[{{id}}][align]" class="select validate-select">'
 <?php foreach ($_alignments as $_value => $_label): ?>
-+ '<option value="<?php echo $this->jsQuoteEscape($this->htmlEscape($_value)) ?>"><?php echo $this->jsQuoteEscape($this->htmlEscape($_label)) ?></option>'
++ '<option value="<?php echo $this->jsQuoteEscape($this->escapeHtml($_value)) ?>"><?php echo $this->jsQuoteEscape($this->escapeHtml($_label)) ?></option>'
 <?php endforeach ?>
 + '</select>';
 

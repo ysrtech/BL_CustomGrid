@@ -17,6 +17,6 @@ class BL_CustomGrid_Block_Widget_Grid_Editor_Renderer_Field_Text extends BL_Cust
 {
     protected function _getRenderedValue($renderableValue)
     {
-        return ($renderableValue !== '' ? $this->htmlEscape($renderableValue) : '');
+        return ($renderableValue !== '' ? $this->escapeHtml($renderableValue) : '');
     }
 }

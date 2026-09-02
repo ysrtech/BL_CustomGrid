@@ -28,7 +28,7 @@
         <?php if (!$this->getIsNewModel()): ?>
             <?php if ($_filterParam = $this->getGridFilterParamValue()): ?>
                 <input type="hidden" name="filter_param_name" value="<?php echo $this->getGridFilterParamName() ?>" />
-                <input type="hidden" name="filter_param_value" value="<?php echo $this->htmlEscape($_filterParam) ?>" />
+                <input type="hidden" name="filter_param_value" value="<?php echo $this->escapeHtml($_filterParam) ?>" />
             <?php endif ?>
         <?php endif ?>
         <table class="massaction" cellspacing="0" cellpadding="0">
