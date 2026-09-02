@@ -118,6 +118,16 @@
                             <depends><searchable_dropdowns>1</searchable_dropdowns></depends>
                             <comment><![CDATA[How the searchable dropdowns of the grid <strong>filters</strong> are displayed.<br />"<strong>Dropdown With A Search Field Inside It</strong>" is a single combobox that opens a panel holding the search field, and keeps the filter row to one line.<br />"<strong>Search Field Above The Dropdown</strong>" is the original display: a search field stacked on top of the usual dropdown.<br />The grid editor always uses the latter.]]></comment>
                         </searchable_dropdowns_style>
+                        <searchable_dropdowns_forms translate="label comment" module="customgrid">
+                            <label>Searchable Dropdowns In Admin Forms</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>900</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><searchable_dropdowns>1</searchable_dropdowns></depends>
+                            <comment><![CDATA[CSS selectors of the admin forms whose long dropdowns should also become searchable, one per line.<br />The default is the product form, where attributes such as a publisher or supplier list often run to hundreds of options.<br />To disable a selector, type // at the beginning of the line; leave the field empty to switch this off entirely.<br />Only applies to the combobox style, and only to dropdowns over the threshold above. Multiple-selection fields are left alone.]]></comment>
+                        </searchable_dropdowns_forms>
                     </fields>
                 </global>
                 <customization_params translate="label" module="customgrid">

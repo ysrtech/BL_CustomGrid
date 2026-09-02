@@ -168,5 +168,145 @@ blcg.ComboSelect = {
         this.watch(select);
         
         return true;
+    },
+    
+    /**
+     * Turn every eligible select inside the given container into a combobox
+     * 
+     * @param Element container
+     * @return int Number of comboboxes created
+     */
+    applyToContainer: function(container)
+    {
+        var count = 0;
+        
+        if (!(container = $(container))) {
+            return count;
+        }
+        
+        container.select('select').each(function(select) {
+            if (this.apply(select)) {
+                /*
+                 * BVSelect hides the original select with an inline
+                 * "display: none". Prototype's Validation.isVisible() walks up
+                 * from a field and treats a display:none one as absent,
+                 * skipping every rule on it - so on a form that would silently
+                 * turn off required-entry validation for any field replaced
+                 * here. This class keeps the select in the layout, one pixel
+                 * wide and transparent, so it still validates. See styles.css.
+                 */
+                select.addClassName('blcg-combo-select-source');
+                
+                var box = select.next('.bv_mainselect');
+                
+                if (box) {
+                    box.addClassName('blcg-combo-select-form');
+                }
+                
+                count++;
+            }
+        }.bind(this));
+        
+        return count;
     }
 };
+
+/**
+ * Handler in charge of making the long dropdowns of admin forms searchable.
+ *
+ * Which forms is a configuration value, because it depends on the store: the
+ * product form is the one that usually needs it, since attributes like a
+ * publisher or supplier list grow into the hundreds of options.
+ */
+blcg.ComboSelect.AdminForms = {
+    isInitialized: false,
+    observed: [],
+    
+    init: function()
+    {
+        if (this.isInitialized
+            || !blcg.SearchableSelect.isEnabled()
+            || !blcg.ComboSelect.isAvailable()) {
+            return;
+        }
+        
+        this.selectors = blcg.SearchableSelect.config.formSelectors || [];
+        
+        if (!this.selectors.length) {
+            return;
+        }
+        
+        this.isInitialized = true;
+        this.applyToDocument();
+    },
+    
+    /**
+     * @return Element[]
+     */
+    getForms: function()
+    {
+        var forms = [];
+        
+        this.selectors.each(function(selector) {
+            try {
+                $$(selector).each(function(form) {
+                    if (forms.indexOf(form) === -1) {
+                        forms.push(form);
+                    }
+                });
+            } catch (e) {
+                // A selector typed into the config field can be invalid
+            }
+        });
+        
+        return forms;
+    },
+    
+    applyToDocument: function()
+    {
+        this.getForms().each(function(form) {
+            blcg.ComboSelect.applyToContainer(form);
+            this.observe(form);
+        }.bind(this));
+    },
+    
+    /**
+     * Most of an admin form's tabs are fetched over AJAX, and their fields
+     * therefore appear well after dom:loaded. Watching the form covers those,
+     * and anything else that adds fields later, without needing a hook into
+     * each individual screen.
+     * 
+     * @param Element form
+     */
+    observe: function(form)
+    {
+        if (typeof(MutationObserver) == 'undefined' || this.observed.indexOf(form) !== -1) {
+            return;
+        }
+        
+        this.observed.push(form);
+        var handler = this;
+        var scheduled = false;
+        
+        new MutationObserver(function() {
+            if (scheduled) {
+                return;
+            }
+            
+            scheduled = true;
+            
+            // Coalesce the burst of mutations a tab load produces into one pass
+            setTimeout(function() {
+                scheduled = false;
+                
+                try {
+                    blcg.ComboSelect.applyToContainer(form);
+                } catch (e) {}
+            }, 200);
+        }).observe(form, { childList: true, subtree: true });
+    }
+};
+
+document.observe('dom:loaded', function() {
+    blcg.ComboSelect.AdminForms.init();
+});
