@@ -147,6 +147,7 @@
                 <sort_with_dnd>1</sort_with_dnd>
                 <searchable_dropdowns>1</searchable_dropdowns>
                 <searchable_dropdowns_threshold>10</searchable_dropdowns_threshold>
+                <searchable_dropdowns_style>combo</searchable_dropdowns_style>
             </global>
             <customization_params>
                 <ignore_custom_headers>0</ignore_custom_headers>

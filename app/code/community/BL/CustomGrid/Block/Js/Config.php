@@ -46,6 +46,7 @@ class BL_CustomGrid_Block_Js_Config extends Mage_Adminhtml_Block_Template
             array(
                 'enabled'    => $configHelper->getSearchableDropdowns(),
                 'minOptions' => $configHelper->getSearchableDropdownsThreshold(),
+                'style'      => $configHelper->getSearchableDropdownsStyle(),
             )
         );
     }

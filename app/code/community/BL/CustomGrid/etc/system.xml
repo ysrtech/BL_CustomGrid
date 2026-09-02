@@ -107,6 +107,17 @@
                             <depends><searchable_dropdowns>1</searchable_dropdowns></depends>
                             <comment><![CDATA[A search field will only be added to the dropdowns holding strictly more options than this value.<br />If none is set, "<strong>10</strong>" value will be used.]]></comment>
                         </searchable_dropdowns_threshold>
+                        <searchable_dropdowns_style translate="label comment" module="customgrid">
+                            <label>Searchable Dropdowns Style</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>customgrid/system_config_source_searchable_dropdowns_style</source_model>
+                            <sort_order>800</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><searchable_dropdowns>1</searchable_dropdowns></depends>
+                            <comment><![CDATA[How the searchable dropdowns of the grid <strong>filters</strong> are displayed.<br />"<strong>Dropdown With A Search Field Inside It</strong>" is a single combobox that opens a panel holding the search field, and keeps the filter row to one line.<br />"<strong>Search Field Above The Dropdown</strong>" is the original display: a search field stacked on top of the usual dropdown.<br />The grid editor always uses the latter.]]></comment>
+                        </searchable_dropdowns_style>
                     </fields>
                 </global>
                 <customization_params translate="label" module="customgrid">
