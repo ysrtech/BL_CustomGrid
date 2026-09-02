@@ -18,7 +18,11 @@
     <default>
         <reference name="head">
             <action method="addCss"><css>bl/customgrid/styles.css</css></action>
+            <action method="addCss"><css>bl/customgrid/bvselect/bvselect.css</css></action>
+            <action method="addJs"><js>bl/customgrid/bvselect/bvselect.js</js></action>
             <action method="addJs"><js>bl/customgrid/config.js</js></action>
+            <!-- Must come after config.js, which owns the blcg namespace -->
+            <action method="addJs"><js>bl/customgrid/combo-select.js</js></action>
             <!-- Some needed elements from editor handle -->
             <action method="addJs"><script>prototype/window.js</script></action>
             <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>

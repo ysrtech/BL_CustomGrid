@@ -20,6 +20,9 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     
     const DEFAULT_SEARCHABLE_DROPDOWNS_THRESHOLD = 10;
     
+    const SEARCHABLE_DROPDOWNS_STYLE_COMBO  = 'combo';
+    const SEARCHABLE_DROPDOWNS_STYLE_LEGACY = 'legacy';
+    
     /**
      * Configuration paths
      */
@@ -32,6 +35,7 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     const CONFIG_PATH_SORT_WITH_DND   = 'customgrid/global/sort_with_dnd';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS = 'customgrid/global/searchable_dropdowns';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD = 'customgrid/global/searchable_dropdowns_threshold';
+    const CONFIG_PATH_SEARCHABLE_DROPDOWNS_STYLE = 'customgrid/global/searchable_dropdowns_style';
     
     // Customization parameters
     const CONFIG_PATH_DISPLAY_SYSTEM_PART        = 'customgrid/customization_params/display_system_part';
@@ -234,6 +238,20 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     {
         $threshold = (int) Mage::getStoreConfig(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD);
         return ($threshold > 0 ? $threshold : self::DEFAULT_SEARCHABLE_DROPDOWNS_THRESHOLD);
+    }
+    
+    /**
+     * Getter for the config value "General" > "Searchable Dropdowns Style"
+     *
+     * @return string
+     */
+    public function getSearchableDropdownsStyle()
+    {
+        $style = (string) Mage::getStoreConfig(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS_STYLE);
+        
+        return ($style === self::SEARCHABLE_DROPDOWNS_STYLE_LEGACY)
+            ? self::SEARCHABLE_DROPDOWNS_STYLE_LEGACY
+            : self::SEARCHABLE_DROPDOWNS_STYLE_COMBO;
     }
     
     /**

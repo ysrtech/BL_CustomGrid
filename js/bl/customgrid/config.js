@@ -1019,7 +1019,9 @@ Object.extend(blcg.SearchableSelect, {
         enabled: true,
         minOptions: 10,
         gridFilters: true,
-        editors: true
+        editors: true,
+        /* "combo" renders the grid filters with blcg.ComboSelect, "legacy" with this widget */
+        style: 'combo'
     },
     
     setConfig: function(config)
@@ -1155,7 +1157,21 @@ blcg.SearchableSelect.GridFilters = {
         
         var widgets = [];
         
+        /*
+         * The combobox rendering replaces this widget in the filter row - see
+         * combo-select.js. It falls back to this one when the library it needs
+         * is missing, so a failed asset never leaves a grid without a way to
+         * search its filters.
+         */
+        var useCombo = (blcg.SearchableSelect.config.style != 'legacy')
+            && (typeof(blcg.ComboSelect) != 'undefined')
+            && blcg.ComboSelect.isAvailable();
+        
         container.select(this.selector).each(function(select) {
+            if (useCombo && blcg.ComboSelect.apply(select)) {
+                return;
+            }
+            
             var widget = blcg.SearchableSelect.apply(select, {
                 layoutClassName: 'blcg-searchable-select-block',
                 gridObject: (gridObject ? gridObject : this.findGridObject(select))
