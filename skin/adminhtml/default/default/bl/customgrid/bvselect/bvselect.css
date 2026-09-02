@@ -1,3 +1,17 @@
+/*
+ * Vendored from BVSelect v1.3 - https://github.com/BMSVieira/BVSelect-VanillaJS
+ * MIT licensed. See ../../../../../../js/bl/customgrid/bvselect/LICENSE.
+ *
+ * MODIFIED FROM UPSTREAM: five selectors have been scoped. Upstream declares
+ * .arrow, .up, .down, .nofocus and .innerinput globally, and Magento's own
+ * grid pager markup uses class="arrow" on its previous/next images - so
+ * upstream's ".arrow { float: right }" tore the pager arrows out of the page
+ * and stacked them, reversed, against the right edge of the toolbar, on every
+ * admin grid. The library always emits "arrows_bv" alongside "arrow" on its
+ * own caret, and the other two only ever appear inside .bv_ul_inner, so
+ * scoping costs nothing and removes the collision. Nothing else is changed.
+ */
+
 /* *****************************
 
 BVSelect Jquery Plugin Styles
@@ -32,7 +46,7 @@ Developed by: Bruno Vieira
 .bv_background {
 	background-color: #fff
 }
-.arrow {
+.arrows_bv {
 	border: solid grey;
 	border-width: 0 3px 3px 0;
 	display: inline-block;
@@ -40,13 +54,13 @@ Developed by: Bruno Vieira
 	float: right;
 	pointer-events: none;
 }
-.up {
+.arrows_bv.up {
 	transform: rotate(-135deg);
 	-webkit-transform: rotate(-135deg);
 	margin-top: 5px;
 	transition: all .2s ease
 }
-.down {
+.arrows_bv.down {
 	transition: all .2s ease;
 	transform: rotate(45deg);
 	-webkit-transform: rotate(45deg);
@@ -147,13 +161,13 @@ Developed by: Bruno Vieira
 .bv_ul_inner li:hover {
 	background-color: #eee
 }
-.nofocus
+.bv_ul_inner .nofocus
 {
 	background-color: rgba(255, 255, 255, 0.1) !important;
 	padding: 0px !important;
 	border-bottom: 2px solid #e1e1e1;
 }
-.innerinput
+.bv_ul_inner .innerinput
 {
 	padding: 0px 9px 0px 10px;
 }
