@@ -156,7 +156,7 @@ class BL_CustomGrid_Block_Widget_Grid_Config_Columns_Helper_Collection extends M
                 $values['windowConfig'] = array(
                     'width'  => $renderer->getData('config_window/width'),
                     'height' => $renderer->getData('config_window/height'),
-                    'title'  => $this->htmlEscape($renderer->getData('config_window/title')),
+                    'title'  => $this->escapeHtml($renderer->getData('config_window/title')),
                 );
             }
             

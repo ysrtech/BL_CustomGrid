@@ -140,7 +140,7 @@
                     <td>
                         <?php if ($_fromAttribute): ?>
                             <?php if ($_column['missing']): ?>
-                                <em><?php echo $this->htmlEscape($_column['index']) ?></em>
+                                <em><?php echo $this->escapeHtml($_column['index']) ?></em>
                             <?php else: ?>
                                 <input type="hidden" id="<?php echo $_htmlId ?>-renderer-params-<?php echo $_dbId ?>" name="config[<?php echo $_dbId ?>][renderer_params]" value="<?php echo $_stringHelper->htmlDoubleEscape($_column['renderer_params']) ?>" />
                                 <?php echo $this->getAttributesSelectHtml($_dbId, 'config['.$_dbId.'][index]', $_htmlId.'-renderer-params-'.$_dbId, ($_canChooseEditableColumns ? 'column-editable-infos-'.$_dbId : false), 'editable-checkbox-'.$_dbId, $_column['index'], false) ?>
@@ -188,35 +188,35 @@
                     </td>
                     <td>
                         <?php if (isset($_lockedValues['header'])): ?>
-                            <span class="nobr"><?php echo $this->htmlEscape($_lockedValues['header']) ?></span>
+                            <span class="nobr"><?php echo $this->escapeHtml($_lockedValues['header']) ?></span>
                         <?php else: ?>
-                            <input name="config[<?php echo $_dbId ?>][header]" class="input-text" type="text" value="<?php echo $this->htmlEscape($_column['header']) ?>" />
+                            <input name="config[<?php echo $_dbId ?>][header]" class="input-text" type="text" value="<?php echo $this->escapeHtml($_column['header']) ?>" />
                         <?php endif ?>
                     </td>
                     <td>
                         <?php if (isset($_lockedValues['width'])): ?>
-                            <span class="nobr"><?php echo $this->htmlEscape($_lockedValues['width']) ?></span>
+                            <span class="nobr"><?php echo $this->escapeHtml($_lockedValues['width']) ?></span>
                         <?php else: ?>
-                            <input name="config[<?php echo $_dbId ?>][width]" class="input-text" type="text" value="<?php echo $this->htmlEscape($_column['width']) ?>" />
+                            <input name="config[<?php echo $_dbId ?>][width]" class="input-text" type="text" value="<?php echo $this->escapeHtml($_column['width']) ?>" />
                         <?php endif ?>
                     </td>
                     <td>
                         <?php if (isset($_lockedValues['align'])): ?>
                             <?php if (isset($_columnAlignments[$_lockedValues['align']])): ?>
-                                <span class="nobr"><?php echo $this->htmlEscape($_columnAlignments[$_lockedValues['align']]) ?></span>
+                                <span class="nobr"><?php echo $this->escapeHtml($_columnAlignments[$_lockedValues['align']]) ?></span>
                             <?php endif ?>
                         <?php else: ?>
                             <select name="config[<?php echo $_dbId ?>][align]" class="select validate-select">
                             <?php foreach ($_columnAlignments as $_value => $_label): ?>
-                                <option value="<?php echo $this->htmlEscape($_value) ?>" <?php if ($_value == $_column['align']): ?>selected="selected"<?php endif ?>>
-                                    <?php echo $this->htmlEscape($_label) ?>
+                                <option value="<?php echo $this->escapeHtml($_value) ?>" <?php if ($_value == $_column['align']): ?>selected="selected"<?php endif ?>>
+                                    <?php echo $this->escapeHtml($_label) ?>
                                 </option>
                             <?php endforeach ?>
                             </select>
                         <?php endif ?>
                     </td>
                     <td>
-                        <input name="config[<?php echo $_dbId ?>][order]" id="<?php echo $_htmlId ?>-column-order-<?php echo $_dbId ?>" class="input-text validate-number" type="text" <?php if ($this->getUseDragNDrop()): ?>readonly="readonly" value="<?php echo $_i*$_gridModel->getOrderPitch() ?>"<?php else: ?>value="<?php echo $this->htmlEscape($_column['order']) ?>"<?php endif ?> />
+                        <input name="config[<?php echo $_dbId ?>][order]" id="<?php echo $_htmlId ?>-column-order-<?php echo $_dbId ?>" class="input-text validate-number" type="text" <?php if ($this->getUseDragNDrop()): ?>readonly="readonly" value="<?php echo $_i*$_gridModel->getOrderPitch() ?>"<?php else: ?>value="<?php echo $this->escapeHtml($_column['order']) ?>"<?php endif ?> />
                     </td>
                     <td class="a-center">
                         <?php echo ($_column['missing'] ? '<strong>'.$this->__('Yes').'</strong>' : $this->__('No')) ?>
@@ -241,7 +241,7 @@
     
     var blcgAlignmentSelectTemplate = '<select name="config[{{id}}][align]" class="select validate-select">'
     <?php foreach ($_columnAlignments as $_value => $_label): ?>
-    +'<option value="<?php echo $this->jsQuoteEscape($this->htmlEscape($_value)) ?>"><?php echo $this->jsQuoteEscape($this->htmlEscape($_label)) ?></option>'
+    +'<option value="<?php echo $this->jsQuoteEscape($this->escapeHtml($_value)) ?>"><?php echo $this->jsQuoteEscape($this->escapeHtml($_label)) ?></option>'
     <?php endforeach ?>
     +'</select>';
     
