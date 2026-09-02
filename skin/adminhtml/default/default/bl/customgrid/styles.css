@@ -464,18 +464,27 @@ div.blcg-collapseable a.open { background:url(images/collapse_arrow_up.png) 100%
 .dialog.blcg-maximized-popup-window td.blcg_content > div.blcg_content { height:100% !important; overflow:auto !important; }
 .adminhtml-blcg-grid-columnslistform { background:#fff; }
 
-/* Form pages displayed inside a window : their content must use the whole height of the window */
-body.blcg-window-form-page,
-body.blcg-window-form-page .wrapper,
-body.blcg-window-form-page .wrapper-popup,
-body.blcg-window-form-page .middle {
+/**
+ * Form pages displayed inside a window : their content must use the whole height of the window.
+ * Those pages are matched through the body class that Mage_Adminhtml_Block_Page adds by itself,
+ * so that no layout action is needed to mark them.
+ */
+.adminhtml-blcg-grid-columnslistform,
+.adminhtml-blcg-grid-columnslistform .wrapper,
+.adminhtml-blcg-grid-columnslistform .wrapper-popup,
+.adminhtml-blcg-grid-columnslistform .middle,
+.adminhtml-blcg-grid-editor-form,
+.adminhtml-blcg-grid-editor-form .wrapper,
+.adminhtml-blcg-grid-editor-form .wrapper-popup,
+.adminhtml-blcg-grid-editor-form .middle {
     box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
     min-height:100vh;
 }
 
-body.blcg-window-form-page { margin:0; }
+.adminhtml-blcg-grid-columnslistform,
+.adminhtml-blcg-grid-editor-form { margin:0; }
 
 /* SEARCHABLE DROPDOWNS */
 
