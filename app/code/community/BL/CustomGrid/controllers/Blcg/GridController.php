@@ -548,13 +548,13 @@ class BL_CustomGrid_Blcg_GridController extends BL_CustomGrid_Controller_Grid_Ac
         );
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         // Specific permissions are enforced by the models
         switch ($this->getRequest()->getActionName()) {
             case 'index':
             case 'grid':
-                return $this->_getAdminSession()->isAllowed('customgrid/administration/view_grids_list');
+                return (bool) $this->_getAdminSession()->isAllowed('customgrid/administration/view_grids_list');
         }
         return true;
     }

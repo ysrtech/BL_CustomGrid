@@ -77,8 +77,8 @@ class BL_CustomGrid_Blcg_Column_Renderer_AttributeController extends BL_CustomGr
         $this->_setActionSuccessJsonResponse(array('parameters' => $params));
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        return $this->_getAdminSession()->isAllowed('customgrid/customization/edit_columns');
+        return (bool) $this->_getAdminSession()->isAllowed('customgrid/customization/edit_columns');
     }
 }

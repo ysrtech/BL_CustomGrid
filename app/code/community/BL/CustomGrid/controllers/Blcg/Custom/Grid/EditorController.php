@@ -148,9 +148,9 @@ class BL_CustomGrid_Blcg_Custom_Grid_EditorController
         }
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        return Mage::getSingleton('admin/session')
+        return (bool) Mage::getSingleton('admin/session')
             ->isAllowed('system/customgrid/editor/edit_columns');
     }
 }

@@ -93,7 +93,7 @@ class BL_CustomGrid_Blcg_Grid_ExportController extends BL_CustomGrid_Controller_
         $this->_applyExportAction('xml', 'export.xml');
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         // Specific permissions are enforced by the models
         return true;

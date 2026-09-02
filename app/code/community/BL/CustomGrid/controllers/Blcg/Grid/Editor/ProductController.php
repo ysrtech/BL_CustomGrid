@@ -39,8 +39,8 @@ class BL_CustomGrid_Blcg_Grid_Editor_ProductController extends BL_CustomGrid_Con
         $this->getResponse()->setBody($contentBlock->toHtml());
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        return $this->_getAdminSession()->isAllowed('customgrid/editor/edit_columns');
+        return (bool) $this->_getAdminSession()->isAllowed('customgrid/editor/edit_columns');
     }
 }

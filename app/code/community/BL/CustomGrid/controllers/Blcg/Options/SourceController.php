@@ -205,8 +205,8 @@ class BL_CustomGrid_Blcg_Options_SourceController extends BL_CustomGrid_Controll
         $this->getResponse()->setRedirect($this->getUrl('*/*/index'));
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        return $this->_getAdminSession()->isAllowed('system/customgrid/options_source');
+        return (bool) $this->_getAdminSession()->isAllowed('system/customgrid/options_source');
     }
 }
