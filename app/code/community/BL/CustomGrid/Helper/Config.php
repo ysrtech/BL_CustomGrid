@@ -36,6 +36,7 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS = 'customgrid/global/searchable_dropdowns';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD = 'customgrid/global/searchable_dropdowns_threshold';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_STYLE = 'customgrid/global/searchable_dropdowns_style';
+    const CONFIG_PATH_SEARCHABLE_DROPDOWNS_FORMS = 'customgrid/global/searchable_dropdowns_forms';
     
     // Customization parameters
     const CONFIG_PATH_DISPLAY_SYSTEM_PART        = 'customgrid/customization_params/display_system_part';
@@ -252,6 +253,28 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
         return ($style === self::SEARCHABLE_DROPDOWNS_STYLE_LEGACY)
             ? self::SEARCHABLE_DROPDOWNS_STYLE_LEGACY
             : self::SEARCHABLE_DROPDOWNS_STYLE_COMBO;
+    }
+    
+    /**
+     * Getter for the config value "General" > "Searchable Dropdowns In Admin Forms"
+     *
+     * @return string[] CSS selectors, one per line in the config field
+     */
+    public function getSearchableDropdownsFormSelectors()
+    {
+        $value = (string) Mage::getStoreConfig(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS_FORMS);
+        $selectors = array();
+        
+        foreach (preg_split('/[\r\n]+/', $value) as $selector) {
+            $selector = trim($selector);
+            
+            // Same convention as the rest of the module's selector fields
+            if (($selector !== '') && (strpos($selector, '//') !== 0)) {
+                $selectors[] = $selector;
+            }
+        }
+        
+        return $selectors;
     }
     
     /**
