@@ -38,7 +38,7 @@ class BL_CustomGrid_Blcg_Custom_Grid_Column_FilterController
         );
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         return true;
     }

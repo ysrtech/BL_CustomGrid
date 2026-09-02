@@ -27,7 +27,7 @@ class BL_CustomGrid_Blcg_Config_FormController extends BL_CustomGrid_Controller_
         }
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         return true;
     }

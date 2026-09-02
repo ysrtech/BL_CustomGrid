@@ -42,7 +42,7 @@ class BL_CustomGrid_Blcg_Grid_Column_FilterController extends Mage_Adminhtml_Con
         $this->getResponse()->setBody($chooserBlock->getCategoryChildrenJson($mainCategoryId));
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         return true;
     }

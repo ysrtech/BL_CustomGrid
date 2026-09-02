@@ -379,9 +379,9 @@ class BL_CustomGrid_Blcg_Custom_GridController
         return true;
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        // Only return allowed flag for actions that don't (at least, atm) have grid-level permissions
+        // Only return (bool) allowed flag for actions that don't (at least, atm) have grid-level permissions
         switch ($this->getRequest()->getActionName()) {
             case 'exportCsv':
             case 'exportXls':

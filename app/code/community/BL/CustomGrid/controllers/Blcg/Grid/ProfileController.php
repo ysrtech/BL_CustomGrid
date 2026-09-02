@@ -275,7 +275,7 @@ class BL_CustomGrid_Blcg_Grid_ProfileController extends BL_CustomGrid_Controller
         }
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
         // Specific permissions are enforced by the models
         return true;

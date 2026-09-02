@@ -130,8 +130,8 @@ class BL_CustomGrid_Blcg_Grid_MassController extends BL_CustomGrid_Controller_Gr
         );
     }
     
-    protected function _isAllowed()
+    protected function _isAllowed(): bool
     {
-        return $this->_getAdminSession()->isAllowed('customgrid/administration/view_grids_list');
+        return (bool) $this->_getAdminSession()->isAllowed('customgrid/administration/view_grids_list');
     }
 }
