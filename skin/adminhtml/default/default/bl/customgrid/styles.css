@@ -571,6 +571,12 @@ tr.filter .bv_atual {
     padding:3px 20px 3px 6px; border:1px solid #ccc; border-radius:3px;
     font-size:12px; line-height:18px; color:#333; background:#fff;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    /* The library fills this box with the selected option's text. Plenty of
+       grid filters open on a blank "any" option, and the caret below is taken
+       out of flow, so with no text there is nothing left to give the box a
+       line and it collapses to its padding. Hold the height of the plain
+       inputs beside it whether or not there is a label to show. */
+    min-height:26px;
 }
 /* The caret is an empty <i> the library floats right. Empty inline-blocks still get a full
    line box, which made it 24px tall and bumped it onto a second line, doubling the height

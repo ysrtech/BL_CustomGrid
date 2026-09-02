@@ -10,6 +10,12 @@ without outbound network access, and so the version is pinned.
 The stylesheet lives alongside the module's other styles, at
 skin/adminhtml/default/default/bl/customgrid/bvselect/bvselect.css.
 
-To update, replace both files from `js/` and `css/` upstream, then re-check
-combo-select.js - it is the only caller, and it works around two quirks of this
-version that are described in its comments.
+`bvselect.js` is unmodified. `bvselect.css` has five selectors scoped - see the
+header comment in that file. Upstream declares `.arrow`, `.up`, `.down`,
+`.nofocus` and `.innerinput` globally, and Magento's grid pager uses
+`class="arrow"` on its previous/next images, so upstream's
+`.arrow { float: right }` displaced the pager arrows on every admin grid.
+
+To update, replace both files from `js/` and `css/` upstream, re-apply that
+scoping, and re-check combo-select.js - it is the only caller, and it works
+around two quirks of this version that are described in its comments.
