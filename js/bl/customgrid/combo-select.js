@@ -86,9 +86,9 @@ blcg.ComboSelect = {
      * 
      * @param Element select
      */
-    watch: function(select)
+    watch: function(select, box)
     {
-        this.watched.push({ element: select, lastValue: select.value });
+        this.watched.push({ element: select, box: box, lastValue: select.value });
         
         if (!this.isWatching) {
             this.isWatching = true;
@@ -116,9 +116,10 @@ blcg.ComboSelect = {
             this.watched.each(function(entry) {
                 if (entry.element.value !== entry.lastValue) {
                     entry.lastValue = entry.element.value;
+                    this.reflectEmptyState(entry.element, entry.box);
                     entry.element.dispatchEvent(new Event('change', { bubbles: true }));
                 }
-            });
+            }.bind(this));
         }.bind(this), 0);
     },
     
@@ -132,12 +133,62 @@ blcg.ComboSelect = {
     },
     
     /**
+     * Give a nameless empty option something to display.
+     *
+     * Both the closed control and the list row are drawn from the option's
+     * text, so an option that is empty in both value and label - which is how
+     * Magento writes the "no value" choice of a grid filter and of most
+     * attribute dropdowns - renders as a blank box and an invisible row.
+     * Naming the option fixes both at once, and keeps working when the library
+     * redraws the control after a selection.
+     *
+     * Options that already carry a label, such as "All Countries", are left
+     * alone: they are clear as they are.
+     *
+     * @param Element select
+     * @param string placeholder
+     */
+    labelEmptyOption: function(select, placeholder)
+    {
+        if (placeholder === '') {
+            return;
+        }
+        
+        $A(select.options).each(function(option) {
+            if ((option.value === '') && (option.text.strip() === '')) {
+                option.text = placeholder;
+            }
+        });
+    },
+    
+    /**
+     * Mark a combobox that currently holds no value, so it can be shown as a
+     * prompt rather than as a chosen value
+     * 
+     * @param Element select
+     * @param Element box
+     */
+    reflectEmptyState: function(select, box)
+    {
+        if (!box) {
+            return;
+        }
+        
+        if (blcg.Tools.isEmptyValue(select.value)) {
+            box.addClassName('blcg-combo-select-is-empty');
+        } else {
+            box.removeClassName('blcg-combo-select-is-empty');
+        }
+    },
+    
+    /**
      * Turn the given select element into a combobox, if it is eligible
      * 
      * @param Element select
+     * @param object config Accepts a "placeholder" for the empty option
      * @return bool Whether the combobox was created
      */
-    apply: function(select)
+    apply: function(select, config)
     {
         if (!this.isAvailable()
             || !(select = $(select))
@@ -147,6 +198,10 @@ blcg.ComboSelect = {
             return false;
         }
         
+        config = config || {};
+        var placeholder = (typeof(config.placeholder) != 'undefined') ? config.placeholder : '';
+        this.labelEmptyOption(select, placeholder);
+        
         try {
             new BVSelect({
                 selector: '#' + this.ensureUniqueId(select),
@@ -154,7 +209,7 @@ blcg.ComboSelect = {
                 searchbox: true,
                 search_autofocus: true,
                 search_placeholder: this.translate('Search...'),
-                placeholder: (select.options.length ? select.options[0].text : ''),
+                placeholder: (placeholder !== '') ? placeholder : (select.options.length ? select.options[0].text : ''),
                 // Handled with CSS instead, see the note in styles.css
                 offset: false
             });
@@ -165,7 +220,10 @@ blcg.ComboSelect = {
         }
         
         select.store(this.STORAGE_KEY, true);
-        this.watch(select);
+        
+        var box = select.next('.bv_mainselect');
+        this.watch(select, box);
+        this.reflectEmptyState(select, box);
         
         return true;
     },
@@ -184,8 +242,10 @@ blcg.ComboSelect = {
             return count;
         }
         
+        var config = { placeholder: this.translate('-- Please Select --') };
+        
         container.select('select').each(function(select) {
-            if (this.apply(select)) {
+            if (this.apply(select, config)) {
                 /*
                  * BVSelect hides the original select with an inline
                  * "display: none". Prototype's Validation.isVisible() walks up

@@ -648,3 +648,7 @@ select.blcg-combo-select-source {
     padding:0 !important; margin:0 !important; border:0 !important;
     opacity:0; pointer-events:none; vertical-align:top;
 }
+
+/* A combobox holding no value reads as a prompt rather than as a choice. Set by
+   blcg.ComboSelect.reflectEmptyState(), on both the filter row and forms. */
+.bv_mainselect.blcg-combo-select-is-empty .bv_atual { color:#8f8f8f; font-style:italic; }

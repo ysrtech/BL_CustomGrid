@@ -1105,6 +1105,15 @@ Object.extend(blcg.SearchableSelect, {
  * either at page load or after a grid has been reloaded with AJAX
  */
 blcg.SearchableSelect.GridFilters = {
+    /**
+     * @param string string
+     * @return string
+     */
+    translate: function(string)
+    {
+        return (typeof(Translator) != 'undefined') ? Translator.translate(string) : string;
+    },
+    
     isInitialized: false,
     selector: 'tr.filter select',
     
@@ -1168,7 +1177,7 @@ blcg.SearchableSelect.GridFilters = {
             && blcg.ComboSelect.isAvailable();
         
         container.select(this.selector).each(function(select) {
-            if (useCombo && blcg.ComboSelect.apply(select)) {
+            if (useCombo && blcg.ComboSelect.apply(select, { placeholder: this.translate('Any') })) {
                 return;
             }
             
