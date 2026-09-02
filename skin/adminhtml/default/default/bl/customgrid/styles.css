@@ -159,6 +159,20 @@ div.blcg-collapseable a.open { background:url(images/collapse_arrow_up.png) 100%
 .blcg-grid-profiles-bar-button.blcg-disabled:hover,
 .blcg-grid-profiles-bar-button.blcg-disabled:active { color:#ddd; background:none; }
 
+/* The profile bar buttons draw their icons as Font Awesome codepoints (see the
+   content: "\fXXX" rules below). The font used to come from
+   //maxcdn.bootstrapcdn.com, which no longer serves it, leaving every button
+   blank. It is vendored under fonts/ now - see fonts/README.md. Only the font
+   is needed, not Font Awesome's stylesheet. */
+@font-face {
+    font-family:FontAwesome;
+    src:url(fonts/fontawesome-webfont.woff2) format("woff2"),
+        url(fonts/fontawesome-webfont.woff) format("woff");
+    font-weight:normal;
+    font-style:normal;
+    font-display:block;
+}
+
 .blcg-grid-profiles-bar-button > span:before {
     display:inline-block;
     line-height:14px;
