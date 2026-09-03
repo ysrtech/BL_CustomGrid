@@ -245,6 +245,18 @@ blcg.ComboSelect = {
         var config = { placeholder: this.translate('-- Please Select --') };
         
         container.select('select').each(function(select) {
+            /*
+             * A combobox holds one value, so multiples go to the widget built
+             * for them - see multi-select.js.
+             */
+            if (select.multiple) {
+                if ((typeof(blcg.MultiSelect) != 'undefined') && blcg.MultiSelect.apply(select)) {
+                    count++;
+                }
+                
+                return;
+            }
+            
             if (this.apply(select, config)) {
                 /*
                  * BVSelect hides the original select with an inline
