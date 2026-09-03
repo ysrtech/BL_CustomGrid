@@ -652,3 +652,39 @@ select.blcg-combo-select-source {
 /* A combobox holding no value reads as a prompt rather than as a choice. Set by
    blcg.ComboSelect.reflectEmptyState(), on both the filter row and forms. */
 .bv_mainselect.blcg-combo-select-is-empty .bv_atual { color:#8f8f8f; font-style:italic; }
+
+/* Searchable widget for multiple-selection fields - see js/bl/customgrid/multi-select.js.
+   Sized to sit beside the single-value combobox and the admin's own inputs. */
+.blcg-multiselect { position:relative; display:inline-block; vertical-align:top; min-width:260px; max-width:100%; }
+.blcg-multiselect-control {
+    box-sizing:border-box; position:relative; width:100%; min-height:26px;
+    padding:3px 20px 3px 4px; border:1px solid #ccc; background:#fff; cursor:pointer;
+    font-size:12px; line-height:18px; color:#333;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.blcg-multiselect.blcg-multiselect-is-empty .blcg-multiselect-control { color:#8f8f8f; font-style:italic; }
+/* Same caret as the combobox, drawn the same way */
+.blcg-multiselect-arrow {
+    position:absolute; top:50%; right:7px; margin-top:-4px;
+    width:4px; height:4px; border:solid grey; border-width:0 2px 2px 0;
+    transform:rotate(45deg); pointer-events:none;
+}
+.blcg-multiselect-open .blcg-multiselect-arrow { margin-top:-1px; transform:rotate(-135deg); }
+
+.blcg-multiselect-panel {
+    display:none; position:absolute; top:100%; left:0; z-index:500;
+    min-width:100%; max-width:460px; margin-top:1px;
+    background:#fff; border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,.18);
+}
+.blcg-multiselect-open .blcg-multiselect-panel { display:block; }
+.blcg-multiselect-search { padding:0; border-bottom:1px solid #e1e1e1; background:#fafafa; }
+.blcg-multiselect-search input { box-sizing:border-box; width:100%; padding:5px 8px; border:0; background:transparent; font-size:12px; }
+.blcg-multiselect-actions { padding:4px 9px; border-bottom:1px solid #e1e1e1; font-size:11px; }
+.blcg-multiselect-options { max-height:280px; overflow-y:auto; margin:0; padding:0; list-style:none; }
+.blcg-multiselect-option { margin:0; padding:0; }
+.blcg-multiselect-option label {
+    display:block; padding:4px 9px; font-size:12px; font-weight:normal; line-height:16px;
+    white-space:nowrap; cursor:pointer;
+}
+.blcg-multiselect-option label:hover { background:#eee; }
+.blcg-multiselect-option input { margin:0 6px 0 0; vertical-align:middle; }
