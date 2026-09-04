@@ -652,3 +652,13 @@ select.blcg-select-source {
     padding:0 !important; margin:0 !important; border:0 !important;
     opacity:0; pointer-events:none;
 }
+
+/* In a grid filter it can go altogether. Nothing validates a filter row - the
+   only Validation the grid builds is over the massaction form below it, which
+   is outside tr.filter - and the widget is only ever applied here through the
+   "tr.filter select" selector in config.js. display:none is the one value no
+   theme's own button or select rules can put back into the flow, so the filter
+   row gets it and the forms keep the rule above. */
+tr.filter select.blcg-select-source {
+    display:none !important;
+}
