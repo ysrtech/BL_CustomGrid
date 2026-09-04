@@ -635,12 +635,20 @@ tr.filter .blcg-select-panel { border-radius:3px; }
 
 /* Prototype's Validation.isVisible() walks up from a field and treats a
    display:none one as absent, skipping every rule on it - which would silently
-   switch off required-entry validation for any form field replaced here. Keep
-   the select in the layout at one transparent pixel instead: invisible, but
-   still validated, and still where the validator anchors its advice. */
+   switch off required-entry validation for any form field replaced here. So
+   this cannot be display:none, but it can be taken out of the flow: that test
+   is Element.visible(), which reads display and nothing else, so an absolutely
+   positioned select still validates.
+
+   Out of flow rather than one transparent pixel: an inline pixel still sits in
+   the line box beside the widget and pushes the row it is in down. With no
+   offsets given it stays at its static position, so it takes no space and
+   moves nothing, and the validator still finds it where it expects to anchor
+   its advice. */
 select.blcg-select-source {
     display:inline-block !important;
+    position:absolute !important;
     width:1px !important; height:1px !important; min-width:0 !important;
     padding:0 !important; margin:0 !important; border:0 !important;
-    opacity:0; pointer-events:none; vertical-align:top;
+    opacity:0; pointer-events:none;
 }
