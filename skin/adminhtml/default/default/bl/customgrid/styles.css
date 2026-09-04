@@ -560,131 +560,87 @@ tr.filter .blcg-searchable-select select.blcg-searchable-select-enhanced { width
 
 #customgrid_global.config .note { width:100%; min-width:268px; }
 #customgrid_rewriters_file.config .comment span { font-family:Courier New,Courier,Arial,Helvetica,sans-serif; }
-/* Combobox rendering of the searchable dropdowns - see js/bl/customgrid/combo-select.js.
-   Used both in the grid filter row and, where configured, in admin forms.
-   BVSelect ships sized for a standalone form control (11pt text, 10px padding, 6px radii);
-   a grid filter cell is a much tighter space, so these bring it down to the size of the
-   plain inputs beside it. All scoped to tr.filter, so the library keeps its own look
-   anywhere else it might be used. */
-tr.filter .bv_mainselect,
-.blcg-combo-select-form { position:relative; padding:0; font-family:inherit; font-size:inherit; }
-tr.filter .bv_atual,
-.blcg-combo-select-form .bv_atual {
-    position:relative; box-sizing:border-box; width:100%;
-    padding:3px 20px 3px 6px; border:1px solid #ccc; border-radius:3px;
-    font-size:12px; line-height:18px; color:#333; background:#fff;
+/* Searchable dropdown - see js/bl/customgrid/select-widget.js. One control that
+   opens a panel holding the search field and the options, used for both
+   single-value and multiple-selection fields, in the grid filter row and in the
+   admin forms named in the module's configuration. */
+.blcg-select { position:relative; display:inline-block; vertical-align:top; min-width:260px; max-width:100%; }
+
+.blcg-select-control {
+    box-sizing:border-box; position:relative; width:100%; min-height:26px;
+    padding:3px 20px 3px 6px; border:1px solid #ccc; background:#fff; cursor:pointer;
+    font-size:12px; line-height:18px; color:#333;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    /* The library fills this box with the selected option's text. Plenty of
-       grid filters open on a blank "any" option, and the caret below is taken
-       out of flow, so with no text there is nothing left to give the box a
-       line and it collapses to its padding. Hold the height of the plain
-       inputs beside it whether or not there is a label to show. */
-    min-height:26px;
 }
-/* The caret is an empty <i> the library floats right. Empty inline-blocks still get a full
-   line box, which made it 24px tall and bumped it onto a second line, doubling the height
-   of the control. Take it out of flow and size it explicitly. */
-tr.filter .bv_atual .arrows_bv,
-.blcg-combo-select-form .bv_atual .arrows_bv {
-    position:absolute; top:50%; right:7px; float:none;
-    width:4px; height:4px; padding:0; margin:0; line-height:0; border-width:0 2px 2px 0;
+/* A dropdown holding no value reads as a prompt rather than as a choice */
+.blcg-select.blcg-select-is-empty .blcg-select-control { color:#8f8f8f; font-style:italic; }
+
+/* The caret, drawn rather than fetched: half a border box, turned 45 degrees.
+   Absolute, so an empty control keeps the height of the inputs beside it
+   instead of collapsing to its padding. */
+.blcg-select-arrow {
+    position:absolute; top:50%; right:7px; margin-top:-4px;
+    width:4px; height:4px; border:solid grey; border-width:0 2px 2px 0;
+    transform:rotate(45deg); pointer-events:none;
 }
-tr.filter .bv_atual .arrows_bv.down,
-.blcg-combo-select-form .bv_atual .arrows_bv.down { margin-top:-4px; }
-tr.filter .bv_atual .arrows_bv.up,
-.blcg-combo-select-form .bv_atual .arrows_bv.up { margin-top:-1px; }
-/* !important is load-bearing here, not laziness: the library's FixVerticalViewPort() writes
-   position and bottom as inline styles, which only !important can beat. It flips the panel to
-   "fixed; bottom:0" whenever the last option would fall below the fold - which, once the list
-   scrolls internally, is always, because it measures the last <li> rather than the panel box.
-   Left alone the panel renders pinned to the bottom of the window, nowhere near its filter.
-   combo-select.js also passes offset:false so the library does not do the work in the first
-   place, but two of its three calls to that function are unconditional. */
-tr.filter .bv_ul_inner,
-.blcg-combo-select-form .bv_ul_inner {
-    position:absolute !important; top:100% !important; bottom:auto !important; left:0 !important;
-    width:auto !important; /* the library writes an inline width matching the closed control */
-    min-width:100%; margin-top:1px; max-height:320px; overflow-y:auto;
-    border:1px solid #ccc; border-radius:3px; box-shadow:0 2px 6px rgba(0,0,0,.18);
-    z-index:500; /* above the grid header, which carries its own stacking context */
+.blcg-select-open .blcg-select-arrow { margin-top:-1px; transform:rotate(-135deg); }
+
+.blcg-select-panel {
+    display:none; position:absolute; top:100%; left:0; z-index:500;
+    min-width:100%; max-width:460px; margin-top:1px;
+    background:#fff; border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,.18);
 }
-tr.filter .bv_ul_inner li,
-.blcg-combo-select-form .bv_ul_inner li {
-    padding:4px 9px; font-family:inherit; font-size:12px; font-weight:normal;
-    line-height:16px; white-space:nowrap;
+.blcg-select-open .blcg-select-panel { display:block; }
+
+.blcg-select-search {
+    display:flex; align-items:center;
+    border-bottom:1px solid #e1e1e1; background:#fafafa;
 }
-/* The search box is the first li; make it read as a field, not an option. */
-tr.filter .bv_ul_inner li.nofocus,
-tr.filter .bv_ul_inner li.nofocus:hover,
-.blcg-combo-select-form .bv_ul_inner li.nofocus,
-.blcg-combo-select-form .bv_ul_inner li.nofocus:hover {
-    padding:0; border-bottom:1px solid #e1e1e1; background:#fafafa;
+.blcg-select-search input {
+    flex:1 1 auto; box-sizing:border-box; width:100%; min-width:0;
+    padding:5px 8px; border:0; background:transparent;
+    font-family:inherit; font-size:12px;
 }
-tr.filter .bv_ul_inner li input,
-.blcg-combo-select-form .bv_ul_inner li input {
-    box-sizing:border-box; width:100%; padding:5px 8px;
-    font-family:inherit; font-size:12px; background:transparent;
+/* Offered only once the typed term has ruled every option out */
+.blcg-select-add {
+    flex:0 0 auto; padding:0 8px; font-size:11px; line-height:16px;
+    white-space:nowrap; text-decoration:underline;
 }
 
-/* Form context. The filter row sizes itself to the cell; a form field instead
-   matches the admin's own inputs - 26px tall, 12px, square corners - and needs
-   its own width, since the filter rule stretches to 100% of a narrow cell. */
-.blcg-combo-select-form {
-    display:inline-block; vertical-align:top;
-    min-width:260px; max-width:100%;
-}
-.blcg-combo-select-form .bv_atual { border-radius:0; }
+.blcg-select-actions { padding:4px 9px; border-bottom:1px solid #e1e1e1; font-size:11px; }
+.blcg-select-options { max-height:280px; overflow-y:auto; margin:0; padding:0; list-style:none; }
 
-/* BVSelect hides the original select with an inline "display: none". Prototype's
-   Validation.isVisible() walks up from a field and treats a display:none one as
-   absent, skipping every rule on it - which would silently switch off
-   required-entry validation for any form field replaced here. Keep it in the
-   layout at one transparent pixel instead: invisible, but still validated, and
-   still where the validator anchors its advice. !important because the display
-   it is overriding is an inline style written by the library. */
-select.blcg-combo-select-source {
+.blcg-select-option { margin:0; padding:0; }
+.blcg-select-option > span,
+.blcg-select-option label {
+    display:block; padding:4px 9px;
+    font-family:inherit; font-size:12px; font-weight:normal; line-height:16px;
+    white-space:nowrap; cursor:pointer;
+}
+.blcg-select-option > span:hover,
+.blcg-select-option label:hover { background:#eee; }
+.blcg-select-option input { margin:0 6px 0 0; vertical-align:middle; }
+/* Single-value fields have no tick to show which row is the current one */
+.blcg-select:not(.blcg-select-multiple) .blcg-select-is-selected > span { font-weight:bold; background:#f4f4f4; }
+
+/* Form context: the admin's own selects in a form row are 330px wide, and a
+   widget beside them at its default width reads as a different kind of field. */
+.blcg-select-form { min-width:330px; }
+
+/* Filter row context: size to the cell, and sit above the grid header, which
+   carries its own stacking context. */
+tr.filter .blcg-select { min-width:0; width:100%; }
+tr.filter .blcg-select-control { border-radius:3px; }
+tr.filter .blcg-select-panel { border-radius:3px; }
+
+/* Prototype's Validation.isVisible() walks up from a field and treats a
+   display:none one as absent, skipping every rule on it - which would silently
+   switch off required-entry validation for any form field replaced here. Keep
+   the select in the layout at one transparent pixel instead: invisible, but
+   still validated, and still where the validator anchors its advice. */
+select.blcg-select-source {
     display:inline-block !important;
     width:1px !important; height:1px !important; min-width:0 !important;
     padding:0 !important; margin:0 !important; border:0 !important;
     opacity:0; pointer-events:none; vertical-align:top;
 }
-
-/* A combobox holding no value reads as a prompt rather than as a choice. Set by
-   blcg.ComboSelect.reflectEmptyState(), on both the filter row and forms. */
-.bv_mainselect.blcg-combo-select-is-empty .bv_atual { color:#8f8f8f; font-style:italic; }
-
-/* Searchable widget for multiple-selection fields - see js/bl/customgrid/multi-select.js.
-   Sized to sit beside the single-value combobox and the admin's own inputs. */
-.blcg-multiselect { position:relative; display:inline-block; vertical-align:top; min-width:260px; max-width:100%; }
-.blcg-multiselect-control {
-    box-sizing:border-box; position:relative; width:100%; min-height:26px;
-    padding:3px 20px 3px 4px; border:1px solid #ccc; background:#fff; cursor:pointer;
-    font-size:12px; line-height:18px; color:#333;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.blcg-multiselect.blcg-multiselect-is-empty .blcg-multiselect-control { color:#8f8f8f; font-style:italic; }
-/* Same caret as the combobox, drawn the same way */
-.blcg-multiselect-arrow {
-    position:absolute; top:50%; right:7px; margin-top:-4px;
-    width:4px; height:4px; border:solid grey; border-width:0 2px 2px 0;
-    transform:rotate(45deg); pointer-events:none;
-}
-.blcg-multiselect-open .blcg-multiselect-arrow { margin-top:-1px; transform:rotate(-135deg); }
-
-.blcg-multiselect-panel {
-    display:none; position:absolute; top:100%; left:0; z-index:500;
-    min-width:100%; max-width:460px; margin-top:1px;
-    background:#fff; border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,.18);
-}
-.blcg-multiselect-open .blcg-multiselect-panel { display:block; }
-.blcg-multiselect-search { padding:0; border-bottom:1px solid #e1e1e1; background:#fafafa; }
-.blcg-multiselect-search input { box-sizing:border-box; width:100%; padding:5px 8px; border:0; background:transparent; font-size:12px; }
-.blcg-multiselect-actions { padding:4px 9px; border-bottom:1px solid #e1e1e1; font-size:11px; }
-.blcg-multiselect-options { max-height:280px; overflow-y:auto; margin:0; padding:0; list-style:none; }
-.blcg-multiselect-option { margin:0; padding:0; }
-.blcg-multiselect-option label {
-    display:block; padding:4px 9px; font-size:12px; font-weight:normal; line-height:16px;
-    white-space:nowrap; cursor:pointer;
-}
-.blcg-multiselect-option label:hover { background:#eee; }
-.blcg-multiselect-option input { margin:0 6px 0 0; vertical-align:middle; }

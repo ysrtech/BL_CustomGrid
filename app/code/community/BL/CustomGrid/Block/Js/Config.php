@@ -42,13 +42,36 @@ class BL_CustomGrid_Block_Js_Config extends Mage_Adminhtml_Block_Template
         $coreHelper = $this->helper('core');
         $configHelper = $this->_getConfigHelper();
         
-        return $coreHelper->jsonEncode(
-            array(
-                'enabled'    => $configHelper->getSearchableDropdowns(),
-                'minOptions' => $configHelper->getSearchableDropdownsThreshold(),
-                'style'      => $configHelper->getSearchableDropdownsStyle(),
-                'formSelectors' => $configHelper->getSearchableDropdownsFormSelectors(),
-            )
+        $config = array(
+            'enabled'    => $configHelper->getSearchableDropdowns(),
+            'minOptions' => $configHelper->getSearchableDropdownsThreshold(),
+            'style'      => $configHelper->getSearchableDropdownsStyle(),
+            'formSelectors' => $configHelper->getSearchableDropdownsFormSelectors(),
         );
+        
+        if ($this->_canAddAttributeOptions()) {
+            $config['formKey'] = Mage::getSingleton('core/session')->getFormKey();
+            $config['addOptionUrl'] = $this->getUrl('adminhtml/blcg_attribute_option/add');
+            $config['addOptionAttributes'] = $configHelper->getProductAttributesAcceptingNewOptions();
+        }
+        
+        return $coreHelper->jsonEncode($config);
+    }
+    
+    /**
+     * Return whether the searchable dropdowns may offer to create a missing
+     * option. Sent to the browser only to decide whether to draw the link: the
+     * controller checks the same things again before it writes anything.
+     * 
+     * @return bool
+     */
+    protected function _canAddAttributeOptions()
+    {
+        $configHelper = $this->_getConfigHelper();
+        
+        return $configHelper->getSearchableDropdowns()
+            && $configHelper->getSearchableDropdownsAddOptions()
+            && count($configHelper->getSearchableDropdownsFormSelectors())
+            && Mage::getSingleton('admin/session')->isAllowed('catalog/products');
     }
 }

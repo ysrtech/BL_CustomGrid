@@ -37,6 +37,7 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_THRESHOLD = 'customgrid/global/searchable_dropdowns_threshold';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_STYLE = 'customgrid/global/searchable_dropdowns_style';
     const CONFIG_PATH_SEARCHABLE_DROPDOWNS_FORMS = 'customgrid/global/searchable_dropdowns_forms';
+    const CONFIG_PATH_SEARCHABLE_DROPDOWNS_ADD_OPTIONS = 'customgrid/global/searchable_dropdowns_add_options';
     
     // Customization parameters
     const CONFIG_PATH_DISPLAY_SYSTEM_PART        = 'customgrid/customization_params/display_system_part';
@@ -71,6 +72,14 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
      *
      * @return BL_CustomGrid_Helper_Data
      */
+    
+    /**
+     * Product attributes that accept new options, kept for the request
+     * 
+     * @var array|null
+     */
+    protected $_addableProductAttributes = null;
+
     protected function _getHelper()
     {
         return Mage::helper('customgrid');
@@ -469,5 +478,69 @@ class BL_CustomGrid_Helper_Config extends Mage_Core_Helper_Abstract
     public function getCustomColumnsUnverifiedCollectionBehaviour()
     {
         return Mage::getStoreConfig(self::CONFIG_PATH_CC_UNVERIFIED_COLLECTION_BEHAVIOUR);
+    }
+    
+    /**
+     * Getter for the config value "General" > "Allow Adding Values From The Product Form"
+     *
+     * @return bool
+     */
+    public function getSearchableDropdownsAddOptions()
+    {
+        return Mage::getStoreConfigFlag(self::CONFIG_PATH_SEARCHABLE_DROPDOWNS_ADD_OPTIONS);
+    }
+    
+    /**
+     * Return the product attributes whose dropdowns may be given new options
+     * from the product form, as attribute code => attribute ID.
+     *
+     * Only the attributes whose options live in eav_attribute_option qualify.
+     * An attribute backed by a source model - a status, a country list, a tax
+     * class - builds its options in PHP, and there is nothing to add a row to.
+     *
+     * @return array
+     */
+    public function getProductAttributesAcceptingNewOptions()
+    {
+        if (!is_null($this->_addableProductAttributes)) {
+            return $this->_addableProductAttributes;
+        }
+        
+        $cacheKey = 'blcg_addable_product_attributes';
+        
+        if ($cached = Mage::app()->loadCache($cacheKey)) {
+            $attributes = @unserialize($cached);
+            
+            if (is_array($attributes)) {
+                return $this->_addableProductAttributes = $attributes;
+            }
+        }
+        
+        $attributes = array();
+        
+        /** @var $collection Mage_Catalog_Model_Resource_Product_Attribute_Collection */
+        $collection = Mage::getResourceModel('catalog/product_attribute_collection');
+        
+        $collection->addFieldToFilter('frontend_input', array('in' => array('select', 'multiselect')))
+            ->addFieldToFilter(
+                'source_model',
+                array(
+                    array('null' => true),
+                    array('eq' => ''),
+                    array('eq' => 'eav/entity_attribute_source_table'),
+                )
+            );
+        
+        foreach ($collection as $attribute) {
+            $attributes[$attribute->getAttributeCode()] = (int) $attribute->getId();
+        }
+        
+        Mage::app()->saveCache(
+            serialize($attributes),
+            $cacheKey,
+            array(Mage_Eav_Model_Entity_Attribute::CACHE_TAG, 'eav')
+        );
+        
+        return $this->_addableProductAttributes = $attributes;
     }
 }
