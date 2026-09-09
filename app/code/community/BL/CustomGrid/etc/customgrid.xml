@@ -78,6 +78,28 @@
                     <allow_store>1</allow_store>
                 </frontend_link>
                 
+                <images_count model="customgrid/custom_column_product_images" module="customgrid">
+                    <name>Images Number</name>
+                    <description>Displays the number of images held by the media gallery of each product</description>
+                    <group>Images</group>
+                    <allow_customization>1</allow_customization>
+                    <allow_store>1</allow_store>
+                    <config_params>
+                        <display_mode>count</display_mode>
+                    </config_params>
+                </images_count>
+                
+                <multiple_images model="customgrid/custom_column_product_images" module="customgrid">
+                    <name>Multiple Images</name>
+                    <description>Displays whether each product has several images in its media gallery</description>
+                    <group>Images</group>
+                    <allow_customization>1</allow_customization>
+                    <allow_store>1</allow_store>
+                    <config_params>
+                        <display_mode>flag</display_mode>
+                    </config_params>
+                </multiple_images>
+                
                 <carts_count model="customgrid/custom_column_product_stats_quote" module="customgrid">
                     <name>Carts Number</name>
                     <description>Displays the number of carts containing each product</description>
