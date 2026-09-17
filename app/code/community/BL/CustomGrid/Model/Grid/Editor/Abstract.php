@@ -482,8 +482,13 @@ abstract class BL_CustomGrid_Model_Grid_Editor_Abstract extends BL_CustomGrid_Ob
                 );
             } elseif ($column->isCustom()) {
                 $hasStoreId  = $column->hasStoreId();
-                $valueConfig = $column->getCustomColumnModel(false)
-                    ->getGridColumnEditorConfig($column, $configBuilder);
+                // A saved column can outlive its custom column type (module disabled,
+                // extension downgraded): treat it as not editable rather than failing
+                // the whole grid
+                $customColumn = $column->getCustomColumnModel();
+                $valueConfig  = $customColumn
+                    ? $customColumn->getGridColumnEditorConfig($column, $configBuilder)
+                    : false;
             } else {
                 $valueConfig = $this->getEditableValueConfig($blockType, $columnBlockId, self::EDITABLE_TYPE_FIELD);
                 

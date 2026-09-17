@@ -155,7 +155,11 @@ class BL_CustomGrid_Model_Grid_Column extends BL_CustomGrid_Model_Grid_Element
      */
     public function getAllowStore()
     {
-        return ($this->isCollection() || ($this->isCustom() && $this->getCustomColumnModel(false)->getAllowStore()));
+        if ($this->isCollection()) {
+            return true;
+        }
+        $customColumn = ($this->isCustom() ? $this->getCustomColumnModel() : null);
+        return ($customColumn && $customColumn->getAllowStore());
     }
     
     /**
@@ -165,9 +169,11 @@ class BL_CustomGrid_Model_Grid_Column extends BL_CustomGrid_Model_Grid_Element
      */
     public function getAllowRenderer()
     {
-        return $this->isCollection()
-            || $this->isAttribute()
-            || ($this->isCustom() && $this->getCustomColumnModel(false)->getAllowRenderers());
+        if ($this->isCollection() || $this->isAttribute()) {
+            return true;
+        }
+        $customColumn = ($this->isCustom() ? $this->getCustomColumnModel() : null);
+        return ($customColumn && $customColumn->getAllowRenderers());
     }
     
     /**
