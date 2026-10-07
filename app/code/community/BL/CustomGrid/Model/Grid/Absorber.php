@@ -140,12 +140,12 @@ class BL_CustomGrid_Model_Grid_Absorber extends BL_CustomGrid_Model_Grid_Worker_
     /**
      * Absorb columns from the given grid collection
      * 
-     * @param Varien_Data_Collection_Db $gridCollection Grid collection
+     * @param Varien_Data_Collection $gridCollection Grid collection (not always DB-based, e.g. the cache grid)
      * @param int $order Starting order
      * @param int $orderPitch Order pitch
      * @return BL_CustomGrid_Model_Grid_Absorber
      */
-    protected function _absorbGridCollectionColumns(Varien_Data_Collection_Db $gridCollection, $order, $orderPitch)
+    protected function _absorbGridCollectionColumns(Varien_Data_Collection $gridCollection, $order, $orderPitch)
     {
         if ($gridCollection->count() > 0) {
             $item = $gridCollection->getFirstItem();
