@@ -334,7 +334,7 @@ class BL_CustomGrid_Helper_Grid extends Mage_Core_Helper_Abstract
     ) {
         return $checkFromOneDotSix
             ? ($collection instanceof Mage_Catalog_Model_Resource_Product_Collection)
-            : ($collection instanceof Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection);
+            : ($collection instanceof Mage_Catalog_Model_Resource_Product_Collection);
     }
     
     /**
@@ -368,7 +368,7 @@ class BL_CustomGrid_Helper_Grid extends Mage_Core_Helper_Abstract
     ) {
         return $checkFromOneDotSix
             ? ($collection instanceof Mage_Sales_Model_Resource_Order_Grid_Collection)
-            : ($collection instanceof Mage_Sales_Model_Mysql4_Order_Grid_Collection);
+            : ($collection instanceof Mage_Sales_Model_Resource_Order_Grid_Collection);
     }
     
     /**
@@ -402,7 +402,7 @@ class BL_CustomGrid_Helper_Grid extends Mage_Core_Helper_Abstract
     ) {
         return $checkFromOneDotSix
             ? ($collection instanceof Mage_Sales_Model_Resource_Order_Invoice_Grid_Collection)
-            : ($collection instanceof Mage_Sales_Model_Mysql4_Order_Invoice_Grid_Collection);
+            : ($collection instanceof Mage_Sales_Model_Resource_Order_Invoice_Grid_Collection);
     }
     
     /**
@@ -436,7 +436,7 @@ class BL_CustomGrid_Helper_Grid extends Mage_Core_Helper_Abstract
     ) {
         return $checkFromOneDotSix
             ? ($collection instanceof Mage_Sales_Model_Resource_Order_Shipment_Grid_Collection)
-            : ($collection instanceof Mage_Sales_Model_Mysql4_Order_Shipment_Grid_Collection);
+            : ($collection instanceof Mage_Sales_Model_Resource_Order_Shipment_Grid_Collection);
     }
     
     /**
@@ -470,6 +470,6 @@ class BL_CustomGrid_Helper_Grid extends Mage_Core_Helper_Abstract
     ) {
         return $checkFromOneDotSix
             ? ($collection instanceof Mage_Sales_Model_Resource_Order_Creditmemo_Grid_Collection)
-            : ($collection instanceof Mage_Sales_Model_Mysql4_Order_Creditmemo_Grid_Collection);
+            : ($collection instanceof Mage_Sales_Model_Resource_Order_Creditmemo_Grid_Collection);
     }
 }

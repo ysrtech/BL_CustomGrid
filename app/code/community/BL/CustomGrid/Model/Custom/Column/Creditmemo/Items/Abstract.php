@@ -32,7 +32,7 @@ abstract class BL_CustomGrid_Model_Custom_Column_Creditmemo_Items_Abstract exten
                 $ordersIds[] = $creditmemo->getOrderId();
             }
             
-            /** @var $items Mage_Sales_Model_Mysql4_Order_Creditmemo_Item_Collection */
+            /** @var $items Mage_Sales_Model_Resource_Order_Creditmemo_Item_Collection */
             $items = Mage::getResourceModel('sales/order_creditmemo_item_collection');
             $items->addFieldToFilter('parent_id', array('in' => $creditmemosIds));
             $items->load();

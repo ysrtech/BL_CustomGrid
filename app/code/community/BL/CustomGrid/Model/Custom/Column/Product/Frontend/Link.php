@@ -103,7 +103,7 @@ class BL_CustomGrid_Model_Custom_Column_Product_Frontend_Link extends BL_CustomG
         $slicesCount = ceil($idsCount/$sliceLength);
         
         for ($i=0; $i<$slicesCount; $i++) {
-            /** @var $rewritesCollection Mage_Core_Model_Mysql4_Url_Rewrite_Collection */
+            /** @var $rewritesCollection Mage_Core_Model_Resource_Url_Rewrite_Collection */
             $rewritesCollection = Mage::getResourceModel('core/url_rewrite_collection');
             list(, $qi) = $this->getCollectionHandler()->getCollectionAdapter($rewritesCollection, true);
             

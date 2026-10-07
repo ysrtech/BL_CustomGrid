@@ -32,7 +32,7 @@ abstract class BL_CustomGrid_Model_Custom_Column_Invoice_Items_Abstract extends 
                 $ordersIds[]   = $invoice->getOrderId();
             }
             
-            /** @var $items Mage_Sales_Model_Mysql4_Order_Invoice_Item_Collection */
+            /** @var $items Mage_Sales_Model_Resource_Order_Invoice_Item_Collection */
             $items = Mage::getResourceModel('sales/order_invoice_item_collection');
             $items->addFieldToFilter('parent_id', array('in' => $invoicesIds));
             $items->load();

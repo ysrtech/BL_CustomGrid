@@ -32,7 +32,7 @@ abstract class BL_CustomGrid_Model_Custom_Column_Shipment_Items_Abstract extends
                 $ordersIds[] = $shipment->getOrderId();
             }
             
-            /** @var $items Mage_Sales_Model_Mysql4_Order_Shipment_Item_Collection */
+            /** @var $items Mage_Sales_Model_Resource_Order_Shipment_Item_Collection */
             $items = Mage::getResourceModel('sales/order_shipment_item_collection');
             $items->addFieldToFilter('parent_id', array('in' => $shipmentsIds));
             $items->load();
