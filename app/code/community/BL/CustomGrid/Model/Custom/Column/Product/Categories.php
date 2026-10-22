@@ -316,7 +316,7 @@ class BL_CustomGrid_Model_Custom_Column_Product_Categories extends BL_CustomGrid
                 ->load();
         }
         if (!$displayIds) {
-            /** @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Collection */
+            /** @var $collection Mage_Catalog_Model_Resource_Category_Collection */
             $collection = $categoryModel->getCollection();
             $collection->setStoreId($store->getId())
                 ->addAttributeToSelect('name')

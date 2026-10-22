@@ -117,7 +117,7 @@ class BL_CustomGrid_Model_Grid_Editor_Product extends BL_CustomGrid_Model_Grid_E
     
     protected function _getAdditionalEditableAttributes($blockType)
     {
-        /** @var Mage_Catalog_Model_Resource_Eav_Mysql4_Product $productResource */
+        /** @var Mage_Catalog_Model_Resource_Product $productResource */
         $productResource = Mage::getResourceModel('catalog/product');
         return array('sku' => $productResource->getAttribute('sku'));
     }

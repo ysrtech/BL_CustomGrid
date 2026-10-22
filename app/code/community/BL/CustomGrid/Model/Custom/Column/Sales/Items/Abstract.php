@@ -324,11 +324,11 @@ abstract class BL_CustomGrid_Model_Custom_Column_Sales_Items_Abstract extends BL
      * Return a loaded orders collection filtered by the given IDs
      * 
      * @param array $ordersIds Orders IDs
-     * @return Mage_Sales_Model_Mysql4_Order_Collection
+     * @return Mage_Sales_Model_Resource_Order_Collection
      */
     protected function _getOrdersCollection(array $ordersIds)
     {
-        /** @var $collection Mage_Sales_Model_Mysql4_Order_Collection */
+        /** @var $collection Mage_Sales_Model_Resource_Order_Collection */
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('entity_id', array('in' => array_unique($ordersIds)));
         return $collection->load();
@@ -340,11 +340,11 @@ abstract class BL_CustomGrid_Model_Custom_Column_Sales_Items_Abstract extends BL
      * @param array $ordersIds Parent orders IDs
      * @param bool $excludeChildren Whether children items should be excluded from the collection
      * @param string|null $eventName Name of the event that will be dispatched before the collection is loaded, if any
-     * @return Mage_Sales_Model_Mysql4_Order_Item_Collection
+     * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
     protected function _getOrdersItemsCollection($ordersIds, $excludeChildren = true, $eventName = null)
     {
-        /** @var $items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+        /** @var $items Mage_Sales_Model_Resource_Order_Item_Collection */
         $items = Mage::getResourceModel('sales/order_item_collection');
         $items->addFieldToFilter('order_id', array('in' => array_unique($ordersIds)));
         
